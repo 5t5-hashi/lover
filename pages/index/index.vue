@@ -1,6 +1,6 @@
 <template>
 	<view class="box">
-		芝士主页
+		芝士{{data.name}}D主页
 	</view>
 </template>
 
@@ -11,12 +11,17 @@
 		ref
 	} from "vue";
 
+	const data = reactive({
+		name: ""
+	})
 
 
 	onMounted(() => {
-
-
-
+		uni.getStorage({
+			key: 'name',
+		}).then((res) => {
+			data.name = res.data
+		})
 	})
 </script>
 
