@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "js-md5": "^0.7.3"
+  },
+  "dependencies": {
+    "@dcloudio/uni-ui": "^1.4.26"
+  }
+}

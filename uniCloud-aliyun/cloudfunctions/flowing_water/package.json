@@ -1,0 +1,7 @@
+{
+  "name": "flowing_water",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

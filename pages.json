@@ -1,0 +1,73 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/loading",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/water/water",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/menu/menu",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "lovers",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationStyle": "custom", //禁用原生导航
+		"backgroundColor": "#F8F8F8"
+
+	},
+	"tabBar": {
+		"color": "#414B5A",
+		"borderStyle": "black",
+		"list": [{
+				"pagePath": "pages/water/water",
+				"iconPath": "https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/49accfbb-0c24-4fec-bdfc-fc7dbd3e1156.svg",
+				"selectedIconPath": "https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/e0546583-9723-4bc0-9503-58fd62a67214.svg",
+				"text": ""
+			},
+			{
+				"pagePath": "pages/index/index",
+				"iconPath": "https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/7a1db510-0a7e-43df-96cb-ff3c4f943b12.svg",
+				"selectedIconPath": "https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/6ea5eaf8-089b-4e86-aba3-6e1f65d8fbd9.svg",
+				"text": ""
+			},
+			{
+				"pagePath": "pages/menu/menu",
+				"iconPath": "https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/1f44a874-52c4-4a00-b317-bfa474fdc303.svg",
+				"selectedIconPath": "https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/f8ffdab5-8898-4651-be38-a65f1a342d8a.svg",
+				"text": ""
+			}
+		]
+	},
+	"uniIdRouter": {}
+}
