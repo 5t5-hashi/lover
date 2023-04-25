@@ -139,7 +139,7 @@
 						</view>
 					</view>
 					<!-- 复选框 -->
-					<view style="margin-left: 180rpx;" class="flex">
+					<view class="flex">
 						<!-- 支出 -->
 						<view class="filterItem flex" @click="selectWaterType(item,'out')">
 							<view class="empty">
