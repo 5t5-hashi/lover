@@ -2,10 +2,10 @@
 	<view>
 		<!-- 选项栏 -->
 		<view class="selectType">
-			<view :class="[data.type===0?'select':'unselect']" style="margin-right: 50rpx;" @click="selectType(0)">
+			<view :class="[data.type===1?'select':'unselect']" style="margin-right: 50rpx;" @click="selectType(1)">
 				支出
 			</view>
-			<view :class="[data.type===1?'select':'unselect']" @click="selectType(1)">
+			<view :class="[data.type===2?'select':'unselect']" @click="selectType(2)">
 				收入
 			</view>
 		</view>
@@ -39,15 +39,18 @@
 			</view>
 		</view>
 		<!-- 标签列表 -->
-		<view class="labelList">
-			<view :class="[data.label===item._id? 'labelSelect flex':'labelUnselect flex']"
-				v-for="(item,index) in data.labelList" :key="index" @click="selectLabel(item._id)">
-				<image class="img" :src="item.icon" mode="aspectFill"></image>
-				<view>
-					{{item.name}}
+		<view style="width: 100%;height: 170rpx;">
+			<view class="labelList">
+				<view :class="[data.label===item._id? 'labelSelect flex':'labelUnselect flex']"
+					v-for="(item,index) in data.labelList" :key="index" @click="selectLabel(item._id)">
+					<image class="img" :src="item.icon" mode="aspectFill"></image>
+					<view>
+						{{item.name}}
+					</view>
 				</view>
 			</view>
 		</view>
+
 		<view class="computer">
 			<!-- 分四列 -->
 			<view class="col">
@@ -113,7 +116,7 @@
 	const data = reactive({
 		name: "",
 		money: "",
-		type: 0,
+		type: 1,
 		labelList: [
 		],
 		label: 1,
@@ -266,7 +269,7 @@
 		uni.getStorage({
 			key: 'role'
 		}).then(res => {
-			if (data.type === 0) {
+			if (data.type === 1) {
 				data.waterFun.out(data.label, parseInt(data.money), data.name, res.data).then(res => {
 					emit('finish')
 				})
@@ -365,8 +368,9 @@
 		margin-top: 24rpx;
 		display: flex;
 		flex-wrap: wrap;
-		align-items: center;
+		/* align-items: center; */
 		margin-bottom: 74rpx;
+		/* height: 150rpx; */
 	}
 
 	.labelSelect {

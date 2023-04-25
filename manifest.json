@@ -49,7 +49,7 @@
                 "ad" : {}
             },
             "splashscreen" : {
-                "androidStyle" : "common"
+                "androidStyle" : "default"
             }
         }
     },

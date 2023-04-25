@@ -98,6 +98,8 @@ module.exports = {
 				errMsg: '创建人不能为空'
 			}
 		}
+
+		// console.log(label, money, name, creater)
 		// 获取余额
 		let balanceCat = await getBalance('cat')
 		let balanceDog = await getBalance('dog')
@@ -132,13 +134,15 @@ module.exports = {
 				label: label,
 				create_time: changeDate(Date.now())
 			}).then(() => {
-				dog_flowing_water.add({
+				cat_flowing_water.add({
 					name: "转账",
 					type: 2,
 					money: money,
 					balance: balanceCat + money,
 					label: "643c0f0d819ce8bdcf7902ea",
 					create_time: changeDate(Date.now())
+				}).then(res => {
+					console.log(res);
 				})
 			})
 		}

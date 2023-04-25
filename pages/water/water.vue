@@ -1,5 +1,6 @@
 <template>
 	<view class="box">
+		<!-- <tabbar :name="'card'" /> -->
 		<view class="top">
 			<view class="flex">
 				<view class="moneyText">
@@ -167,8 +168,8 @@
 						<view class="fs16 fw6">
 							{{water.name}}
 						</view>
-						<view class="fw4 c04 fs12">
-							{{water.date}}
+						<view class="fw4 c04 fs12" style="margin-top: 8rpx;">
+							{{water.create_time.slice(6,16)}}
 						</view>
 					</view>
 					<view class="fs18 fw6" v-if="water.type.type===2&&item.inShow">
@@ -196,6 +197,7 @@
 
 <script setup lang="ts">
 	import computer from "@/components/computer.vue"
+	// import tabbar from "@/components/tabbar.vue"
 	import { getDate } from "@/utils.js"
 	import {
 		onMounted,
@@ -224,6 +226,7 @@
 
 	// 小记一笔
 	function createPop() {
+		console.log(popup.value);
 		popup.value.open("bottom")
 	}
 
@@ -325,9 +328,16 @@
 	}
 
 	onMounted(() => {
-		data.api = uniCloud.importObject('flowing_water')
-		getTotal()
-		init()
+
+		uni.getStorage({
+			key: 'role'
+		}).then((res) => {
+			data.role = res.data
+			data.api = uniCloud.importObject('flowing_water')
+			getTotal()
+			init()
+		})
+
 	})
 </script>
 

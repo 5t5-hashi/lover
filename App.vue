@@ -2,6 +2,17 @@
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
+			uni.getStorage({
+				key: '_id'
+			}).then((res) => {
+				uni.switchTab({
+					url: "./pages/index/index"
+				})
+			}).catch(err => {
+				uni.redirectTo({
+					url: "./pages/login"
+				})
+			})
 		},
 		onShow: function() {
 			console.log('App Show')
