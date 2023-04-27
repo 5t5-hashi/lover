@@ -5,15 +5,27 @@ const cat_flowing_water = db.collection('cat_flowing_water');
 const dog_flowing_water = db.collection('dog_flowing_water');
 const tabel = db.collection('tabel');
 const dbCmd = db.command
-// 时间转时间戳
+// 时间转时间戳(获取清单时后端会先把时间戳转为0区的时间，这里再判断一下转为8区)
+const changeDateGet = (e) => {
+	if (new Date(e).getTimezoneOffset() == 0) {
+		return new Date(new Date(e).getTime() + new Date(e).getTimezoneOffset() * 60 * 1000 - 8 * 60 *
+			60 * 1000).valueOf()
+	} else {
+		return new Date(e).valueOf()
+	}
+}
+
+// 时间转时间戳(把后端获取的前端传入的8区时间转为正常时间戳)
 const changeDate = (e) => {
 	return new Date(e).valueOf()
-	// return parseInt(new Date(e).valueOf().toString().slice(0, 10))
 }
 // 时间转换
 const getDate = (day = 0, cut = 0, e = null) => {
 
-	let mydate = e ? new Date(e) : new Date(e)
+	let mydate = e ? new Date(e) : new Date()
+	mydate = new Date(mydate.getTime() + mydate.getTimezoneOffset() * 60 * 1000 + 8 * 60 *
+		60 * 1000)
+
 	let y = mydate.getFullYear()
 	let m = mydate.getMonth() + 1
 	let d = mydate.getDate() + day
@@ -103,7 +115,8 @@ module.exports = {
 		// 获取余额
 		let balanceCat = await getBalance('cat')
 		let balanceDog = await getBalance('dog')
-
+		money = parseFloat(money).toFixed(2)
+		money = Number(money)
 		if (creater === 'cat' && label === '643c0e9be766bb29750948b5') {
 			cat_flowing_water.add({
 				name: name,
@@ -200,6 +213,9 @@ module.exports = {
 				errMsg: '创建人不能为空'
 			}
 		}
+
+		money = parseFloat(money).toFixed(2)
+		money = Number(money)
 		// 获取余额
 		let balanceCat = await getBalance('cat')
 		let balanceDog = await getBalance('dog')
@@ -251,9 +267,9 @@ module.exports = {
 		} else {
 			water = dog_flowing_water
 		}
-		start = changeDate(start)
-		end = changeDate(end)
-
+		start = changeDateGet(start)
+		end = changeDateGet(end)
+		console.log(start, end);
 		let data = await water.aggregate()
 			.lookup({
 				from: 'label',
@@ -265,7 +281,7 @@ module.exports = {
 			}).end()
 
 		data = data.data
-		// console.log(data);
+
 		// return
 		let dateList = []
 		for (let i = 0; i < data.length; i++) {
@@ -282,7 +298,7 @@ module.exports = {
 		// 去掉重复的日期
 		dateList = new Set(dateList.map(t => JSON.stringify(t)))
 		dateList = [...dateList].map(s => JSON.parse(s))
-		// console.log(data, dateList);
+		console.log(data, dateList);
 		for (let i = 0; i < dateList.length; i++) {
 			dateList[i].water = []
 			dateList[i].outMoney = 0
@@ -315,6 +331,8 @@ module.exports = {
 			}
 		}
 		let myDate = new Date()
+		myDate = new Date(myDate.getTime() + myDate.getTimezoneOffset() * 60 * 1000 + 8 * 60 *
+			60 * 1000)
 		let y = myDate.getFullYear()
 		let m = myDate.getMonth() + 1
 		m = m < 10 ? "0" + m : m
@@ -332,8 +350,8 @@ module.exports = {
 			water = dog_flowing_water
 		}
 
-		start = changeDate(start)
-		end = changeDate(end)
+		start = changeDateGet(start)
+		end = changeDateGet(end)
 		console.log(start, end);
 		let data = await water.where({
 			create_time: dbCmd.gt(start).and(dbCmd.lt(end))

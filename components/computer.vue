@@ -270,11 +270,11 @@
 			key: 'role'
 		}).then(res => {
 			if (data.type === 1) {
-				data.waterFun.out(data.label, parseInt(data.money), data.name, res.data).then(res => {
+				data.waterFun.out(data.label, parseFloat(data.money).toFixed(2), data.name, res.data).then(res => {
 					emit('finish')
 				})
 			} else {
-				data.waterFun.income(data.label, parseInt(data.money), data.name, res.data).then(res => {
+				data.waterFun.income(data.label, parseFloat(data.money).toFixed(2), data.name, res.data).then(res => {
 					emit('finish')
 				})
 			}

@@ -6,6 +6,8 @@ const vibrateShort = () => {
 
 const getDate = (day = 0, cut = 0) => {
 	let mydate = new Date()
+	mydate = new Date(mydate.getTime() + mydate.getTimezoneOffset() * 60 * 1000 + 8 * 60 *
+		60 * 1000)
 	let y = mydate.getFullYear()
 	let m = mydate.getMonth() + 1
 	let d = mydate.getDate() + day

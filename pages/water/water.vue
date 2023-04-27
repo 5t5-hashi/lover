@@ -186,7 +186,6 @@
 		<view class="createButton" @click="createPop">
 			记一笔
 		</view>
-
 		<uni-popup ref="popup">
 			<view class="popBox">
 				<computer @finish="finish" />
