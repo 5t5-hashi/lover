@@ -1,38 +1,30 @@
 <template>
 	<view class="box">
-		<!-- <tabbar :name="'card'" /> -->
 		<view class="top">
 			<view class="flex">
 				<view class="moneyText">
 					钱
 				</view>
-				<image style="height: 56.84rpx;width: 58.1rpx;margin-left: 10.6rpx;"
-					src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/dd4dbb48-0094-4c92-8d34-a700ac198aaa.svg"
+				<image style="height: 56.84rpx;width: 58.1rpx;margin-left: 10.6rpx;" src="@/static/money.svg"
 					mode="aspectFill"></image>
 			</view>
 
 			<view class="flex">
 				<!-- actCat -->
-				<image
-					src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/6138d8db-fef3-465e-ac2b-f10d7d088adc.svg"
-					mode="aspectFill" style="width: 44rpx;height: 44rpx;margin-right:42rpx;" @click="selectRole('cat')"
+				<image src="@/static/icon_active_cat.svg" mode="aspectFill"
+					style="width: 44rpx;height: 44rpx;margin-right:42rpx;" @click="selectRole('cat')"
 					v-show="data.role==='cat'">
 				</image>
 				<!-- unactCat -->
-				<image
-					src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/759fc24e-5e83-4784-93ff-068754ac50fa.svg"
-					mode="aspectFill" style="width: 44rpx;height: 44rpx;margin-right:42rpx;" @click="selectRole('cat')"
+				<image src="@/static/icon_unactive_cat.svg" mode="aspectFill"
+					style="width: 44rpx;height: 44rpx;margin-right:42rpx;" @click="selectRole('cat')"
 					v-show="data.role==='dog'"></image>
 				<!-- actDog -->
-				<image
-					src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/ea30df73-7497-4360-9ca7-d2203a2e25b9.svg"
-					mode="aspectFill" style="width: 44rpx;height: 44rpx;" @click="selectRole('dog')"
-					v-show="data.role==='dog'"></image>
+				<image src="@/static/icon_active_dog.svg" mode="aspectFill" style="width: 44rpx;height: 44rpx;"
+					@click="selectRole('dog')" v-show="data.role==='dog'"></image>
 				<!-- unactDog -->
-				<image
-					src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/d14ed1fb-cfbf-4abf-84eb-3525502f52ce.svg"
-					mode="aspectFill" style="width: 44rpx;height: 44rpx" @click="selectRole('dog')"
-					v-show="data.role==='cat'">
+				<image src="@/static/icon_unactive_dog.svg" mode="aspectFill" style="width: 44rpx;height: 44rpx"
+					@click="selectRole('dog')" v-show="data.role==='cat'">
 				</image>
 
 			</view>
@@ -45,9 +37,8 @@
 					<!-- 统计左 -->
 					<view class="statisticsLeft">
 						<view class="flex" style="margin-left: 18.58rpx;">
-							<image
-								src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/cc635615-e421-4158-9ed9-77d244b2f2b7.svg"
-								mode="aspectFill" style="height: 20rpx;width: 42rpx;margin-right: 20.66rpx;"></image>
+							<image src="@/static/crocodile.svg" mode="aspectFill"
+								style="height: 20rpx;width: 42rpx;margin-right: 20.66rpx;"></image>
 							<view style="font-size: 28rpx;font-weight: 600;">
 								余额
 							</view>
@@ -75,9 +66,7 @@
 					</view>
 				</view>
 				<view class="wave">
-					<image
-						src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/e1d14a21-cd01-471f-b2e1-1cf05ddff342.svg"
-						mode="aspectFill" style="width: 100%;height: 100%;"></image>
+					<image src="@/static/wave.svg" mode="aspectFill" style="width: 100%;height: 100%;"></image>
 				</view>
 			</view>
 		</view>
@@ -86,8 +75,7 @@
 			<view class="detailsText">
 				明细
 				<image style="height: 11rpx;width: 60rpx;position: absolute;left: -6rpx;bottom: 0;"
-					src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/9a2360c8-6561-4832-9dac-43bd05d775f8.svg"
-					mode="aspectFill"></image>
+					src="@/static/detailsBlue.svg" mode="aspectFill"></image>
 			</view>
 
 			<view class="selectItems">
@@ -119,8 +107,7 @@
 				</template>
 				<view :class="[data.type===3?'selectItemActive':'selectItemActive selectItemUnactive']"
 					@click="selectFilter(3)">
-					<image style="height: 40rpx;width: 40rpx;margin-top: 8rpx;"
-						src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/05b969dc-b821-48ca-a878-941ae23a959e.svg"
+					<image style="height: 40rpx;width: 40rpx;margin-top: 8rpx;" src="@/static/calendar.svg"
 						mode="aspectFill"></image>
 				</view>
 			</view>
@@ -196,7 +183,6 @@
 
 <script setup lang="ts">
 	import computer from "@/components/computer.vue"
-	// import tabbar from "@/components/tabbar.vue"
 	import { getDate } from "@/utils.js"
 	import {
 		onMounted,

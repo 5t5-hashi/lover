@@ -1,13 +1,11 @@
 <template>
 	<view class="box">
 		芝士{{data.name}}D主页
-		<!-- <tabbar :name="'home'" /> -->
 		<button type="default" @click="logout">退出</button>
 	</view>
 </template>
 
 <script setup lang="ts">
-	// import tabbar from "@/components/tabbar.vue"
 	import {
 		onMounted,
 		reactive,

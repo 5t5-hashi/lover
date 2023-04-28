@@ -5,23 +5,17 @@
 		</view>
 		<view class="roleList">
 			<!-- 选猫 -->
-			<image v-show="data.role==='cat'" class="img"
-				src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/abcb5947-5543-493a-a633-3aeae4df4c5f.svg"
-				mode="aspectFit">
+			<image v-show="data.role==='cat'" class="img" src="@/static/loginCatSelect.svg" mode="aspectFit">
 			</image>
 			<!-- 未选猫 -->
-			<image v-show="data.role==='dog'" class="img" @click="selectRole('cat')"
-				src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/1d5822d9-25d6-4f58-bbab-e922aebb0d06.svg"
+			<image v-show="data.role==='dog'" class="img" @click="selectRole('cat')" src="@/static/loginCatUnselect.svg"
 				mode="aspectFit">
 			</image>
 			<!-- 选狗 -->
-			<image v-show="data.role==='dog'" class="img"
-				src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/d7c583b1-24f4-455a-9dbb-ce60af2861bb.svg"
-				mode="aspectFit">
+			<image v-show="data.role==='dog'" class="img" src="@/static/loginDogselect.svg" mode="aspectFit">
 			</image>
 			<!-- 未选狗 -->
-			<image v-show="data.role==='cat'" class="img" @click="selectRole('dog')"
-				src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/0fa83ec0-70e6-4fdb-b023-9e1d556d1b7f.svg"
+			<image v-show="data.role==='cat'" class="img" @click="selectRole('dog')" src="@/static/loginDogUnselect.svg"
 				mode="aspectFit">
 			</image>
 		</view>
@@ -30,9 +24,7 @@
 			<view class="tips">
 				请输入密码
 			</view>
-			<image class="X"
-				src="https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/e0e4c7ff-4043-4d64-ad6d-13d15ba39be5.svg"
-				mode="aspectFill" @click="clearPassWrod"></image>
+			<image class="X" src="@/static/X.svg" mode="aspectFill" @click="clearPassWrod"></image>
 			<input class="uni-input" password type="text" :value="data.passWord" @input="inputPassword" />
 		</view>
 
