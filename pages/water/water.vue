@@ -44,7 +44,7 @@
 							</view>
 						</view>
 						<view class="balance">
-							￥{{data.total.balance}}
+							￥{{data.total.balance.toFixed(2)}}
 						</view>
 					</view>
 					<!-- 统计右 -->
