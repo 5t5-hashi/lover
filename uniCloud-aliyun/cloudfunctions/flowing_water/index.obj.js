@@ -337,10 +337,11 @@ module.exports = {
 		let m = myDate.getMonth() + 1
 		m = m < 10 ? "0" + m : m
 		let start = y + "-" + m + "-" + "01 00:00:00"
-
+		let nowNum = myDate.getDay()
 		myDate.setMonth(m);
 		myDate.setDate(0)
 		let dayNum = myDate.getDate() //本月天数
+
 		let end = y + "-" + m + "-" + dayNum + " 23:59:59"
 		let water = null
 
@@ -366,7 +367,7 @@ module.exports = {
 				newData.outMoney += data[i].money
 			}
 		}
-		newData.average = (newData.outMoney / dayNum).toFixed(1)
+		newData.average = (newData.outMoney / nowNum).toFixed(2)
 
 		data = newData
 		return {

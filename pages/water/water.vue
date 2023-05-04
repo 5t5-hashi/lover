@@ -54,7 +54,7 @@
 								style="font-weight: 400;font-size: 24rpx;color: rgba(36, 36, 36, 0.2);margin-right: 12rpx;">
 								当月支出</view>
 							<view style="font-weight: 600;font-size: 28rpx;color: rgba(36, 36, 36, 1);">
-								￥{{data.total.outMoney}}</view>
+								￥{{data.total.outMoney.toFixed(2)}}</view>
 						</view>
 						<view class="dayOut flex">
 							<view
