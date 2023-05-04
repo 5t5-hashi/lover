@@ -14,6 +14,6 @@ uni_modules/
 .eslintcache
 unpackage/dist/build/
 unpackage/dist/dev/
-
+unpackage/release/
 # python
 *.pyc
