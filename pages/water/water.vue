@@ -80,33 +80,33 @@
 
 			<view class="selectItems">
 				<template v-if="!data.showDuringDate">
-					<view :class="[data.type===0?'selectItemActive':'selectItemActive selectItemUnactive']"
+					<view :class="[data.type===0?'selectItemActive':'selectItemActive selectItemUnactive']" id="feed1"
 						@click="selectFilter(0)">
 						今日
 					</view>
-					<view :class="[data.type===1?'selectItemActive':'selectItemActive selectItemUnactive']"
+					<view :class="[data.type===1?'selectItemActive':'selectItemActive selectItemUnactive']" id="feed2"
 						@click="selectFilter(1)">
 						本周
 					</view>
-					<view :class="[data.type===2?'selectItemActive':'selectItemActive selectItemUnactive']"
+					<view :class="[data.type===2?'selectItemActive':'selectItemActive selectItemUnactive']" id="feed3"
 						@click="selectFilter(2)">
 						全部
 					</view>
 				</template>
 				<template v-else>
-					<view class="c04 fs12" style="padding: 7px 16px;">
+					<view class="c04 fs12" style="padding: 7px 16px;" id="feed4">
 						<picker mode="date" :value="data.startDate.slice(0,10)" @change="bindDateStart">
 							<view class="uni-input">{{data.startDate.slice(0,10)}}</view>
 						</picker>
 					</view>
-					<view class="c04 fs12" style="padding: 7px 16px;">
+					<view class="c04 fs12" style="padding: 7px 16px;" id="feed5">
 						<picker mode="date" :value="data.endDate.slice(0,10)" @change="bindDateEnd">
 							<view class="uni-input">{{data.endDate.slice(0,10)}}</view>
 						</picker>
 					</view>
 				</template>
 				<view :class="[data.type===3?'selectItemActive':'selectItemActive selectItemUnactive']"
-					@click="selectFilter(3)">
+					@click="selectFilter(3)" style="right: 24rpx;position: absolute;">
 					<image style="height: 40rpx;width: 40rpx;margin-top: 8rpx;" src="@/static/calendar.svg"
 						mode="aspectFill"></image>
 				</view>
@@ -238,18 +238,56 @@
 			getWater()
 		} else if (e === 3) {
 			if (data.showDuringDate) {
-				data.showDuringDate = false
-				data.type = 0
-				data.startDate = getDate(0, 11) + "00:00:00";
-				data.endDate = getDate(0, 11) + "23:59:59";
-				getWater()
+				// data.showDuringDate = false
+				animation2()
+
 			} else {
-				data.showDuringDate = true
-				getWater()
+				animation1()
 			}
 		}
 
 	}
+
+	function animation1() {
+
+		let f1 = document.querySelector("#feed1").animate([{ right: '192px' }, { right: '12px' }], { duration: 500 })
+		let f2 = document.querySelector("#feed2").animate([{ right: '132px' }, { right: '12px' }], { duration: 500 })
+		let f3 = document.querySelector("#feed3").animate([{ right: '72px' }, { right: '12px' }], { duration: 500 })
+		f1.play()
+		f2.play()
+		f3.play()
+		setTimeout(() => {
+			f1.pause()
+			f2.pause()
+			f3.pause()
+			data.showDuringDate = true
+			let f4 = document.querySelector("#feed4").animate([{ right: '12px', }, { right: '132px' }], { duration: 500 })
+			let f5 = document.querySelector("#feed5").animate([{ right: '12px', }, { right: '50px' }], { duration: 500 })
+			f4.play()
+			f5.play()
+			getWater()
+		}, 470)
+
+	}
+
+	function animation2() {
+
+		let f4 = document.querySelector("#feed4").animate([{ right: '132px', display: 'block' }, { right: '12px', display: 'none' }], { duration: 500 })
+		let f5 = document.querySelector("#feed5").animate([{ right: '50px', display: 'block' }, { right: '12px', display: 'none' }], { duration: 500 })
+		setTimeout(() => {
+			data.showDuringDate = false
+			data.type = 0
+			data.startDate = getDate(0, 11) + "00:00:00";
+			data.endDate = getDate(0, 11) + "23:59:59";
+			let f1 = document.querySelector("#feed1").animate([{ right: '192px' }, { right: '12px' }], { duration: 500 })
+			let f2 = document.querySelector("#feed2").animate([{ right: '132px' }, { right: '12px' }], { duration: 500 })
+			let f3 = document.querySelector("#feed3").animate([{ right: '72px' }, { right: '12px' }], { duration: 500 })
+
+			getWater()
+		}, 470)
+
+	}
+
 
 	// 选择查看流水类型
 	function selectWaterType(e : any, type : string) : void {
@@ -280,9 +318,8 @@
 
 	function getWater() : void {
 		data.api.getWater(data.role, data.startDate, data.endDate).then(res => {
-
-			console.log(res.data);
 			data.list = res.data
+			document.querySelector(".waterBox").animate([{ height: '0px' }, { height: 'none' }], { duration: 500 })
 		})
 	}
 
@@ -327,20 +364,32 @@
 </script>
 
 <style scoped>
-	.shrink {
-		animation: shrinkMove 1s;
+	#feed1 {
+		position: absolute;
+		right: 384rpx;
 	}
 
-	@keyframes shrinkMove {
-		0 {}
-
-		100% {
-			flex: 0;
-		}
-
-
+	#feed2 {
+		position: absolute;
+		right: 264rpx;
 	}
 
+	#feed3 {
+		position: absolute;
+		right: 144rpx;
+	}
+
+	#feed4 {
+		position: absolute;
+		/* right: 264rpx; */
+		width: 200rpx;
+	}
+
+	#feed5 {
+		position: absolute;
+		/* right: 100rpx; */
+		width: 200rpx;
+	}
 
 	.box {
 		height: 100%;
@@ -436,6 +485,7 @@
 		justify-content: space-between;
 		align-items: center;
 		margin-bottom: 38rpx;
+		position: relative;
 	}
 
 	.detailsText {
@@ -451,6 +501,7 @@
 	.selectItems {
 		display: flex;
 		align-items: center;
+		position: relative;
 	}
 
 	.selectItemActive {
@@ -465,7 +516,8 @@
 		height: 60rpx;
 		line-height: 60rpx;
 		text-align: center;
-		margin-right: 24rpx;
+		/* margin-right: 24rpx; */
+
 	}
 
 	.selectItemUnactive {
