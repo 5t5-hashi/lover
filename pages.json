@@ -37,6 +37,13 @@
 				"navigationBarTitleText": "登录",
 				"enablePullDownRefresh": false
 			}
+		},
+		{
+			"path": "pages/menu/createFood",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
 		}
 	],
 	"globalStyle": {

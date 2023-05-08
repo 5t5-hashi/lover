@@ -1,6 +1,7 @@
 <template>
 	<view class="box">
 		芝士{{data.name}}D主页
+		<button type="default" @click="jump('../menu/createFood')">添加菜品</button>
 		<button type="default" @click="logout">退出</button>
 	</view>
 </template>
@@ -20,6 +21,12 @@
 		uni.clearStorage()
 		uni.redirectTo({
 			url: "/pages/login"
+		})
+	}
+
+	function jump(e : string) : void {
+		uni.navigateTo({
+			url: e
 		})
 	}
 

@@ -58,8 +58,16 @@
 		color: rgba(36, 36, 36, 0.4);
 	}
 
+	.c24 {
+		color: #242424;
+	}
+
 	.fs12 {
 		font-size: 24rpx;
+	}
+
+	.fs14 {
+		font-size: 28rpx;
 	}
 
 	.fs16 {
