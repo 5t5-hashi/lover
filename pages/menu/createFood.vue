@@ -1,8 +1,8 @@
 <template>
 	<view class="box">
 		<!-- 返回图片 -->
-		<image src="@/static/back.svg" mode="aspectFill" style="margin-bottom: 43px;width: 20px;height: 14px;"
-			@click="back"></image>
+		<image src="@/static/back.svg" mode="aspectFill"
+			style="margin-bottom: 43px;width: 20px;height: 14px;margin-top: 30px;" @click="back"></image>
 		<!-- 添加图片 -->
 		<view style="margin-bottom: 20px" @click="uploadImg">
 			<image v-if="data.data.url===''" src="@/static/addFoodCover.svg" mode="aspectFill"
@@ -59,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-	import { reactive } from "vue";
+	import { onMounted, reactive } from "vue";
 	import message from "@/components/message.vue"
 
 	const data = reactive({
@@ -67,6 +67,7 @@
 			name: "红烧猪蹄",
 			// url: "https://qn.antdv.com/vue.png",
 			url: "",
+			type: "1",
 			material_list: [
 				{
 					name: "猪蹄",
@@ -80,7 +81,7 @@
 		},
 		showMessage: false,
 		title: "",
-		imgFile: null
+		menu_fun: null
 	})
 
 	// 上传图片
@@ -133,36 +134,82 @@
 		}
 
 		let file = await upload()
+		console.log(file.fileID);
+		data.menu_fun.createMenu({
+			name: data.data.name,
+			url: file.fileID,
+			type: data.data.type,
+			material_list: data.data.material_list
+		}).then(res => {
+			data.title = "已创建！"
+			data.showMessage = true
+		})
 	}
 
 	// 选择上传的文件
-	function select() : void {
-		uni.chooseFile({
-			count: 1, //默认100
-			extension: ['.png', '.jpg'],
-			type: 'image',
-			success: function (res) {
-				console.log(res);
-				data.imgFile = res
-				data.data.url = res.tempFilePaths[0]
-			}
-		});
+	async function select() : Promise<any> {
+		let filePath = await chooseFile()
+		// console.log(filePath);
+		data.data.url = filePath
+
+		// 在APP平台才执行
+		// #ifdef APP-PLUS
+		let compressFile = await compressImage(filePath)
+		data.data.url = compressFile
+		// console.log(compressFile);
+		// #endif
+
+
+
 	}
 
+	// 压缩图片
+	function compressImage(e : any) : any {
+		return new Promise((resolve) => {
+			uni.compressImage({
+				src: e,
+				quality: 60,
+				success: res => {
+					resolve(res.tempFilePath)
+				}
+			})
+		})
+
+	}
+
+	// 选择图片
+	function chooseFile() : any {
+		return new Promise((resolve) => {
+			uni.chooseImage({
+				count: 1, //默认100
+				extension: ['.png', '.jpg'],
+				success: function (res) {
+					console.log(res);
+					resolve(res.tempFilePaths[0])
+				}
+			});
+		})
+	}
+
+	// 上传
 	function upload() : any {
 		return new Promise((resolve) => {
-			uni.uploadFile({
-				url: 'https://file-unimuivqjp-mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.oss-cn-zhangjiakou.aliyuncs.com',
-				filePath: data.imgFile.tempFilePaths[0],
-				name: 'file',
+			let arr = data.data.url.split("/")
+			uniCloud.uploadFile({
+				filePath: data.data.url,
+				cloudPath: "food/" + arr[arr.length - 1],
 				success: (uploadFileRes) => {
-					console.log(uploadFileRes.data);
-					resolve(uploadFileRes.data)
+					console.log(uploadFileRes);
+					resolve(uploadFileRes)
 				}
 			});
 		})
 
 	}
+
+	onMounted(() => {
+		data.menu_fun = uniCloud.importObject('menu')
+	})
 </script>
 
 <style scoped>

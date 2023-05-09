@@ -26,7 +26,9 @@ const getDate = (day = 0, cut = 0) => {
 	return date;
 }
 
+
+
 export {
 	vibrateShort,
-	getDate
+	getDate,
 }
