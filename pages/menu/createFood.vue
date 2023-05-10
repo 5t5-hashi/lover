@@ -27,7 +27,7 @@
 		</view>
 
 		<view class="materialList">
-			<view class="material c24 fs16" v-for="(item,index) in data.data.material_list" :key="index">
+			<view class="material c24 fs16" v-for="(item,index) in data.data.materialList" :key="index">
 				<view class="fw5">
 					<input type="text" v-model="item.name">
 				</view>
@@ -68,7 +68,7 @@
 			// url: "https://qn.antdv.com/vue.png",
 			url: "",
 			type: "1",
-			material_list: [
+			materialList: [
 				{
 					name: "猪蹄",
 					dosage: "2斤"
@@ -81,7 +81,7 @@
 		},
 		showMessage: false,
 		title: "",
-		menu_fun: null
+		menuFun: null
 	})
 
 	// 上传图片
@@ -91,7 +91,7 @@
 
 	// 新增食材列表项
 	function addMaterial() : void {
-		data.data.material_list.push({ name: "", dosage: "" })
+		data.data.materialList.push({ name: "", dosage: "" })
 	}
 
 	// 返回键
@@ -115,7 +115,7 @@
 
 		// 用try和catch来退出foreach循环
 		try {
-			data.data.material_list.forEach(e => {
+			data.data.materialList.forEach(e => {
 				if (e.name === '' || e.dosage === '') {
 					data.title = `"${e.name}${e.dosage}"这一栏还缺少东西哟！`
 					data.showMessage = true
@@ -125,7 +125,7 @@
 					list.push(e)
 				}
 			})
-			data.data.material_list = list
+			data.data.materialList = list
 		} catch (e) {
 			// 退出整个函数
 			if (e.message === '1') {
@@ -135,11 +135,11 @@
 
 		let file = await upload()
 		console.log(file.fileID);
-		data.menu_fun.createMenu({
+		data.menuFun.createMenu({
 			name: data.data.name,
 			url: file.fileID,
 			type: data.data.type,
-			material_list: data.data.material_list
+			materialList: data.data.materialList
 		}).then(res => {
 			data.title = "已创建！"
 			data.showMessage = true
@@ -208,7 +208,7 @@
 	}
 
 	onMounted(() => {
-		data.menu_fun = uniCloud.importObject('menu')
+		data.menuFun = uniCloud.importObject('menu')
 	})
 </script>
 
