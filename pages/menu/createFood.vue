@@ -6,33 +6,55 @@
 		<!-- 添加图片 -->
 		<view style="margin-bottom: 20px" @click="uploadImg">
 			<image v-if="data.data.url===''" src="@/static/addFoodCover.svg" mode="aspectFill"
-				style="height: 80px;width: 131px;" @click="select">
+				style="height: 80px;width: 110px;" @click="select">
 			</image>
 
-			<image v-else :src="data.data.url" mode="aspectFill" style="height: 80px;width: 131px;" @click="select">
+			<image v-else :src="data.data.url" mode="aspectFill" style="height: 80px;width: 110px;" @click="select">
 			</image>
 
 		</view>
 
-		<view class="fs16 c24 fw6">
-			菜谱名
+		<view class="fs16 c24 fw6" style="position: relative;margin-left: 12rpx;">
+			菜品名称
+			<image style="height: 11rpx;width: 60rpx;position: absolute;left: -12rpx;bottom: -6rpx;"
+				src="@/static/detailsBlue.svg" mode="aspectFill"></image>
 		</view>
 
 		<view class="inputName">
 			<input type="text" v-model="data.data.name">
 		</view>
 
-		<view class="fs16 c24 fw6">
-			所需食材
+		<view class="typeList">
+			<view v-for="(item,index) in data.typeList" :key="index"
+				:class="[item.id===data.type?'selectType':'unselectType']" @click="chooseType(item.id)">
+				{{item.name}}
+			</view>
+		</view>
+
+		<view class="fs16 c24 fw6" style="position: relative;margin-left: 12rpx;">
+			用料
+			<image style="height: 11rpx;width: 60rpx;position: absolute;left: -12rpx;bottom: -6rpx;"
+				src="@/static/detailsBlue.svg" mode="aspectFill"></image>
 		</view>
 
 		<view class="materialList">
-			<view class="material c24 fs16" v-for="(item,index) in data.data.materialList" :key="index">
+			<!-- <view class="material c24 fs16" v-for="(item,index) in data.data.materialList" :key="index">
 				<view class="fw5">
 					<input type="text" v-model="item.name">
 				</view>
 				<view class="fw4">
 					<input type="text" v-model="item.dosage" style="text-align: right;">
+				</view>
+			</view> -->
+
+			<view class="c24 fs16" v-for="(item,index) in data.data.materialList" :key="index"
+				style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 10px;">
+				<view class="fw5 materialName">
+					<input type="text" v-model="item.name" placeholder="食材名称" placeholder-class="placeholder">
+				</view>
+				<view class="fw4 materialDosage">
+					<input type="text" v-model="item.dosage" style="text-align: right;" placeholder="用量"
+						placeholder-class="placeholder">
 				</view>
 			</view>
 
@@ -54,6 +76,30 @@
 
 			<message v-if="data.showMessage" :title="data.title" />
 		</view>
+
+		<view class="stepBox">
+			<view class="fs16 c24 fw6" style="position: relative;margin-left: 12rpx;">
+				做法
+				<image style="height: 11rpx;width: 60rpx;position: absolute;left: -12rpx;bottom: -6rpx;"
+					src="@/static/detailsBlue.svg" mode="aspectFill"></image>
+			</view>
+
+			<view class="step" v-for="(item,index) in data.data.step" :key="index">
+				<view class="stepTitle c24 fw7 fs14">
+					{{numToStr(index+1)}}
+				</view>
+				<view class="stepDetail">
+					<input style="width: 100%;word-wrap:break-word; word-break:break-all; overflow: hidden;" type="text"
+						class="c24 fs14" v-model="data.data.step[index]" placeholder="添加步骤说明"
+						placeholder-class="placeholder2">
+				</view>
+			</view>
+			<view class="addIconBox" @click="addStep">
+				<view class="addIcon">
+					+
+				</view>
+			</view>
+		</view>
 	</view>
 
 </template>
@@ -71,17 +117,34 @@
 			materialList: [
 				{
 					name: "猪蹄",
-					dosage: "2斤"
+					dosage: "2斤",
 				},
 				{
 					name: "大蒜",
-					dosage: "半个"
-				}
+					dosage: "半个",
+				},
+			],
+			step: [
+				"水发木耳洗净，摘去根，撕小朵。",
+				"大蒜切沫，洋葱切丝；香菜洗净切段。",
+				"红椒去蒂去筋膜切菱形。",
+				"锅内加500克清水，大火烧开，下木耳炒熟；焯熟的木耳，倒入漏勺过凉水备用；将沥干水分的木耳放入器皿中。",
+				"放大蒜沫10克，盐5克，生抽10克，鸡精5克，米醋20克，香油5克，味精5克，白糖5克。",
+				"最后放洋葱丝20克，红椒片15克，拌匀。",
+				"最后放香菜5克，拌匀；一道美味可口，色香味俱全的凉拌木耳就展现在大家面前了。<br/>"
 			]
 		},
 		showMessage: false,
 		title: "",
-		menuFun: null
+		menuFun: null,
+		typeList: [
+			{ id: "1", name: "炒菜" },
+			{ id: "2", name: "减脂" },
+			{ id: "3", name: "小吃" },
+			{ id: "4", name: "面食" },
+			{ id: "5", name: "甜品" },
+			{ id: "6", name: "饮品" }],
+		type: "1",
 	})
 
 	// 上传图片
@@ -116,7 +179,7 @@
 		// 用try和catch来退出foreach循环
 		try {
 			data.data.materialList.forEach(e => {
-				if (e.name === '' || e.dosage === '') {
+				if ((e.name === '' && e.dosage != '') || (e.dosage === '' && e.name != '')) {
 					data.title = `"${e.name}${e.dosage}"这一栏还缺少东西哟！`
 					data.showMessage = true
 					throw new Error('1')
@@ -133,17 +196,24 @@
 			}
 		}
 
-		let file = await upload()
-		console.log(file.fileID);
-		data.menuFun.createMenu({
-			name: data.data.name,
-			url: file.fileID,
-			type: data.data.type,
-			materialList: data.data.materialList
-		}).then(res => {
-			data.title = "已创建！"
-			data.showMessage = true
-		})
+		for (let i = 0; i < data.data.step.length; i++) {
+			if (data.data.step[i] === '') {
+				data.data.step.splice(i, 1)
+			}
+		}
+		console.log(data.data.materialList);
+
+		// let file = await upload()
+		// console.log(file.fileID);
+		// data.menuFun.createMenu({
+		// 	name: data.data.name,
+		// 	url: file.fileID,
+		// 	type: data.data.type,
+		// 	materialList: data.data.materialList
+		// }).then(res => {
+		// 	data.title = "已创建！"
+		// 	data.showMessage = true
+		// })
 	}
 
 	// 选择上传的文件
@@ -207,6 +277,53 @@
 
 	}
 
+	// 选择菜品类型
+	function chooseType(e : string) : void {
+		data.type = e
+	}
+
+	// 数字转换
+	function numToStr(num : number) : string {
+		switch (num) {
+			case 1:
+				return '第一步';
+			case 2:
+				return '第二步';
+			case 3:
+				return '第三步';
+			case 4:
+				return '第四步';
+			case 5:
+				return '第五步';
+			case 6:
+				return '第六步';
+			case 7:
+				return '第七步';
+			case 8:
+				return '第八步';
+			case 9:
+				return '第九步';
+			case 10:
+				return '第十步';
+			case 11:
+				return '第十一步';
+			case 12:
+				return '第十二步';
+		}
+	}
+
+	// 新增步骤
+	function addStep() {
+		if (data.data.step.length <= 11) {
+			data.data.step.push('')
+		} else {
+			data.showMessage = true
+			data.title = '不能再新增步骤了'
+			return
+		}
+
+	}
+
 	onMounted(() => {
 		data.menuFun = uniCloud.importObject('menu')
 	})
@@ -234,6 +351,7 @@
 	.materialList {
 		margin-top: 10px;
 		width: 100%;
+		margin-bottom: 18px;
 	}
 
 	.material {
@@ -292,5 +410,82 @@
 
 	.upload>>>.uni-file-picker__lists {
 		display: none;
+	}
+
+	.typeList {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 48rpx;
+	}
+
+	.selectType {
+		padding: 8px 12px;
+		background: #DDFF80;
+		border: 1px solid #242424;
+		border-radius: 8px;
+		font-size: 14px;
+		color: #242424;
+		font-weight: 600;
+	}
+
+	.unselectType {
+		padding: 8px 12px;
+		background: #F5F5F5;
+		border: 1px solid #F5F5F5;
+		border-radius: 8px;
+		font-size: 14px;
+		color: rgba(36, 36, 36, 0.3);
+		font-weight: 600;
+	}
+
+	.materialName {
+		width: 211px;
+		padding: 14px 20px 14px 14px;
+		background: #FAFAFA;
+		border-radius: 8px;
+	}
+
+	.materialDosage {
+		width: 134px;
+		padding: 14px 20px 14px 14px;
+		background: #FAFAFA;
+		border-radius: 8px;
+	}
+
+	.placeholder {
+		font-weight: 500;
+		font-size: 16px;
+		color: rgba(36, 36, 36, 0.4);
+	}
+
+	.placeholder2 {
+		font-weight: 500;
+		font-size: 14px;
+		color: rgba(36, 36, 36, 0.4);
+	}
+
+	.step {
+		margin-bottom: 10px;
+		width: 100%;
+	}
+
+	.stepTitle {
+		text-align: center;
+		font-weight: 700;
+		font-size: 14px;
+		color: #242424;
+	}
+
+	.stepDetail {
+		padding: 14px 20px 14px 14px;
+		width: 100%;
+		background: #FAFAFA;
+		border-radius: 8px;
+		margin-top: 8px;
+	}
+
+	.stepBox {
+		padding-bottom: 100px;
 	}
 </style>
