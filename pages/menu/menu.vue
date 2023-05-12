@@ -1,101 +1,72 @@
 <template>
 	<view class="box">
 		<view class="searchBox">
-			<input type="text" @input="inputWrod">
+			<input type="text" @input="inputWrod" v-model="data.keyWrod">
 			<image src="@/static/search.svg" mode="aspectFill" id="searchIcon">
 			</image>
 		</view>
 
-		<view class="menu">
-			<view class="typeList">
-				<view v-for="(item,index) in data.typeList" :key="index"
-					:class="[data.type===item.id?'select':'unselect']" @click="choseType(item.id)">
-					{{item.name}}
-				</view>
+		<view style="padding-bottom: 100px;">
+			<view class="" v-for="(item,index) in data.data">
+				{{item.name}}
 			</view>
-			<view class="menuList">
-				<!-- 	<image class="img" :src="item.url" mode="aspectFill" v-for="(item,index) in data.data" :key="index">
-				</image> -->
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
-				<image class="img" src="../../static/demo1.svg" mode="aspectFill">
-				</image>
+			<view class="" @click="init">
+				更多
 			</view>
 		</view>
 	</view>
 </template>
 
 <script setup lang="ts">
-	import { reactive } from "vue";
+	import { onMounted, reactive } from "vue";
 
 	const data = reactive({
 		keyWrod: "",
 		typeList: [
-			{ id: "0", name: "全部" },
 			{ id: "1", name: "炒菜" },
 			{ id: "2", name: "减脂" },
 			{ id: "3", name: "小吃" },
 			{ id: "4", name: "面食" },
 			{ id: "5", name: "甜品" },
-			{ id: "6", name: "饮品" }],
+			{ id: "6", name: "饮品" },
+			{ id: "7", name: "汤" }],
 		type: "0",
-		// data: [
-		// 	{ id: "1", url: "@/static/demo1" },
-		// 	{ id: "2", url: "@/static/demo1" },
-		// 	{ id: "3", url: "@/static/demo1" },
-		// 	{ id: "4", url: "@/static/demo1" },
-		// 	{ id: "5", url: "@/static/demo1" }]
+		menuFun: null,
+		data: [],
+		page: 1,
+		pageSize: 20
 	})
 
 	// 搜索框输入
 	function inputWrod(e : any) : void {
 		data.keyWrod = e.detail.value
+		data.page = 1
+		data.data = []
+		init()
 	}
 
 	// 选择类型
 	function choseType(e : string) : void {
 		data.type = e
 	}
+
+	// 初始化
+	function init() : void {
+		data.menuFun.getList(data.keyWrod, data.page, data.pageSize).then(res => {
+			if (res.data.length != 0) {
+				data.data = [...data.data, ...res.data]
+				data.page = data.page + 1
+			}
+
+		})
+	}
+
+
+
+	onMounted(() => {
+		data.menuFun = uniCloud.importObject('menu')
+		init()
+	})
 </script>
 
 <style scoped>

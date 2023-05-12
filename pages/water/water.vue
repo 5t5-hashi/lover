@@ -106,7 +106,7 @@
 					</view>
 				</template>
 				<view :class="[data.type===3?'selectItemActive':'selectItemActive selectItemUnactive']"
-					@click="selectFilter(3)" style="right: 24rpx;position: absolute;">
+					@click="selectFilter(3)" style="right: 24rpx;">
 					<image style="height: 40rpx;width: 40rpx;margin-top: 8rpx;" src="@/static/calendar.svg"
 						mode="aspectFill"></image>
 				</view>
@@ -438,6 +438,7 @@
 		display: flex;
 		align-items: center;
 		position: relative;
+		margin-right: 40rpx;
 	}
 
 	.selectItemActive {
@@ -452,6 +453,7 @@
 		height: 60rpx;
 		line-height: 60rpx;
 		text-align: center;
+		margin-left: 24rpx;
 		/* margin-right: 24rpx; */
 
 	}

@@ -4,7 +4,7 @@
 		<image src="@/static/back.svg" mode="aspectFill"
 			style="margin-bottom: 43px;width: 20px;height: 14px;margin-top: 30px;" @click="back"></image>
 		<!-- 添加图片 -->
-		<view style="margin-bottom: 20px" @click="uploadImg">
+		<view style="margin-bottom: 20px">
 			<image v-if="data.data.url===''" src="@/static/addFoodCover.svg" mode="aspectFill"
 				style="height: 80px;width: 110px;" @click="select">
 			</image>
@@ -26,7 +26,7 @@
 
 		<view class="typeList">
 			<view v-for="(item,index) in data.typeList" :key="index"
-				:class="[item.id===data.type?'selectType':'unselectType']" @click="chooseType(item.id)">
+				:class="[item.id===data.data.type?'selectType':'unselectType']" @click="chooseType(item.id)">
 				{{item.name}}
 			</view>
 		</view>
@@ -38,14 +38,6 @@
 		</view>
 
 		<view class="materialList">
-			<!-- <view class="material c24 fs16" v-for="(item,index) in data.data.materialList" :key="index">
-				<view class="fw5">
-					<input type="text" v-model="item.name">
-				</view>
-				<view class="fw4">
-					<input type="text" v-model="item.dosage" style="text-align: right;">
-				</view>
-			</view> -->
 
 			<view class="c24 fs16" v-for="(item,index) in data.data.materialList" :key="index"
 				style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 10px;">
@@ -64,16 +56,6 @@
 				</view>
 			</view>
 
-			<view class="submit" @click="submit">
-				<view class="fs18">
-					+
-				</view>
-				&nbsp;
-				<view>
-					上传
-				</view>
-			</view>
-
 			<message v-if="data.showMessage" :title="data.title" />
 		</view>
 
@@ -86,12 +68,15 @@
 
 			<view class="step" v-for="(item,index) in data.data.step" :key="index">
 				<view class="stepTitle c24 fw7 fs14">
-					{{numToStr(index+1)}}
+					步骤{{index+1}}
 				</view>
 				<view class="stepDetail">
-					<input style="width: 100%;word-wrap:break-word; word-break:break-all; overflow: hidden;" type="text"
+					<!-- <input style="width: 100%;word-wrap:break-word; word-break:break-all; overflow: hidden;" type="text"
 						class="c24 fs14" v-model="data.data.step[index]" placeholder="添加步骤说明"
-						placeholder-class="placeholder2">
+						placeholder-class="placeholder2"> -->
+					<textarea placeholder="添加步骤说明" placeholder-class="placeholder2" class="c24 fs14"
+						v-model="data.data.step[index]" />
+
 				</view>
 			</view>
 			<view class="addIconBox" @click="addStep">
@@ -100,6 +85,17 @@
 				</view>
 			</view>
 		</view>
+
+		<view class="submit" @click="submit">
+			<view class="fs18">
+				+
+			</view>
+			&nbsp;
+			<view>
+				上传
+			</view>
+		</view>
+
 	</view>
 
 </template>
@@ -107,31 +103,25 @@
 <script setup lang="ts">
 	import { onMounted, reactive } from "vue";
 	import message from "@/components/message.vue"
-
+	import { textareaToHtml } from "@/utils.js"
 	const data = reactive({
 		data: {
-			name: "红烧猪蹄",
-			// url: "https://qn.antdv.com/vue.png",
+			name: "",
 			url: "",
 			type: "1",
 			materialList: [
 				{
-					name: "猪蹄",
-					dosage: "2斤",
+					name: "",
+					dosage: "",
 				},
 				{
-					name: "大蒜",
-					dosage: "半个",
+					name: "",
+					dosage: "",
 				},
 			],
 			step: [
-				"水发木耳洗净，摘去根，撕小朵。",
-				"大蒜切沫，洋葱切丝；香菜洗净切段。",
-				"红椒去蒂去筋膜切菱形。",
-				"锅内加500克清水，大火烧开，下木耳炒熟；焯熟的木耳，倒入漏勺过凉水备用；将沥干水分的木耳放入器皿中。",
-				"放大蒜沫10克，盐5克，生抽10克，鸡精5克，米醋20克，香油5克，味精5克，白糖5克。",
-				"最后放洋葱丝20克，红椒片15克，拌匀。",
-				"最后放香菜5克，拌匀；一道美味可口，色香味俱全的凉拌木耳就展现在大家面前了。<br/>"
+				"",
+				"",
 			]
 		},
 		showMessage: false,
@@ -143,14 +133,11 @@
 			{ id: "3", name: "小吃" },
 			{ id: "4", name: "面食" },
 			{ id: "5", name: "甜品" },
-			{ id: "6", name: "饮品" }],
-		type: "1",
+			{ id: "6", name: "饮品" },
+			{ id: "7", name: "汤" },
+		],
 	})
 
-	// 上传图片
-	function uploadImg() : void {
-
-	}
 
 	// 新增食材列表项
 	function addMaterial() : void {
@@ -164,6 +151,7 @@
 
 	// 提交新增
 	async function submit() : Promise<any> {
+
 		let list : any[] = []
 		if (data.data.name === '') {
 			data.title = "菜谱名呢？"
@@ -196,24 +184,30 @@
 			}
 		}
 
+		let changeStep : string[] = []
+		// 把步骤内容更新放入数组中
 		for (let i = 0; i < data.data.step.length; i++) {
 			if (data.data.step[i] === '') {
 				data.data.step.splice(i, 1)
+			} else {
+				changeStep.push(textareaToHtml(data.data.step[i]))
 			}
 		}
-		console.log(data.data.materialList);
+		// console.log(changeStep);
+		// console.log(data.data);
 
-		// let file = await upload()
+		let file = await upload()
 		// console.log(file.fileID);
-		// data.menuFun.createMenu({
-		// 	name: data.data.name,
-		// 	url: file.fileID,
-		// 	type: data.data.type,
-		// 	materialList: data.data.materialList
-		// }).then(res => {
-		// 	data.title = "已创建！"
-		// 	data.showMessage = true
-		// })
+		data.menuFun.createMenu({
+			name: data.data.name,
+			url: file.fileID,
+			type: data.data.type,
+			step: changeStep
+		}).then(res => {
+			data.title = "已创建！"
+			data.showMessage = true
+			uni.navigateBack(1)
+		})
 	}
 
 	// 选择上传的文件
@@ -279,37 +273,7 @@
 
 	// 选择菜品类型
 	function chooseType(e : string) : void {
-		data.type = e
-	}
-
-	// 数字转换
-	function numToStr(num : number) : string {
-		switch (num) {
-			case 1:
-				return '第一步';
-			case 2:
-				return '第二步';
-			case 3:
-				return '第三步';
-			case 4:
-				return '第四步';
-			case 5:
-				return '第五步';
-			case 6:
-				return '第六步';
-			case 7:
-				return '第七步';
-			case 8:
-				return '第八步';
-			case 9:
-				return '第九步';
-			case 10:
-				return '第十步';
-			case 11:
-				return '第十一步';
-			case 12:
-				return '第十二步';
-		}
+		data.data.type = e
 	}
 
 	// 新增步骤
@@ -323,6 +287,8 @@
 		}
 
 	}
+
+
 
 	onMounted(() => {
 		data.menuFun = uniCloud.importObject('menu')
@@ -399,6 +365,8 @@
 		align-items: center;
 		position: fixed;
 		bottom: 32px;
+		border: 1px solid #242424;
+		z-index: 9;
 	}
 
 	.imageStyles {
@@ -420,7 +388,7 @@
 	}
 
 	.selectType {
-		padding: 8px 12px;
+		padding: 8px 8px;
 		background: #DDFF80;
 		border: 1px solid #242424;
 		border-radius: 8px;
@@ -430,7 +398,7 @@
 	}
 
 	.unselectType {
-		padding: 8px 12px;
+		padding: 8px 8px;
 		background: #F5F5F5;
 		border: 1px solid #F5F5F5;
 		border-radius: 8px;
@@ -487,5 +455,20 @@
 
 	.stepBox {
 		padding-bottom: 100px;
+	}
+
+	textarea {
+		/* height: 20px; */
+	}
+
+	[contenteditable] {
+		outline: 1px solid transparent;
+		border: none;
+		width: 100%;
+	}
+
+	[contenteditable]:focus {
+		border: none;
+		border-radius: 3px;
 	}
 </style>

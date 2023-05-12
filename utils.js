@@ -27,8 +27,23 @@ const getDate = (day = 0, cut = 0) => {
 }
 
 
+const textareaToHtml = (str) => {
+	if (str == null) {
+		return "";
+	} else if (str.length == 0) {
+		return "";
+	}
+	str = str.replace(/\r\n/g, "<br>")
+	str = str.replace(/\n/g, "<br>");
+	str = str.replace(/\r/g, "<br>");
+	str = str.replace(/( )/g, "&nbsp;")
+	return str;
+}
+
+
 
 export {
 	vibrateShort,
 	getDate,
+	textareaToHtml
 }
