@@ -20,7 +20,7 @@ module.exports = {
 
 		// 业务逻辑
 		console.log(param);
-		let data = await menu.add(param)
+		let data = await menu.add(arr)
 		if (data) {
 			return {
 				data //请根据实际需要返回值
