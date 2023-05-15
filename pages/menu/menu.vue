@@ -57,7 +57,6 @@
 				data.data = [...data.data, ...res.data]
 				data.page = data.page + 1
 			}
-
 		})
 	}
 

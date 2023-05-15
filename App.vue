@@ -27,12 +27,12 @@
 	/*每个页面公共css */
 	@font-face {
 		font-family: "F";
-		src: url("https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/9d6f776a-1e86-4ddb-8edc-57044c67cfc9.ttf");
+		src: url("@/static/ZiZhiQuXiMaiTi-2.ttf");
 	}
 
 	@font-face {
 		font-family: "M";
-		src: url("https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/a007e754-2772-4be7-b0eb-940816788978.ttf");
+		src: url("@/static/MiSans-Regular.ttf");
 	}
 
 	html,
