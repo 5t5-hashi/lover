@@ -3,6 +3,7 @@
 const db = uniCloud.database();
 const cat_flowing_water = db.collection('cat_flowing_water');
 const dog_flowing_water = db.collection('dog_flowing_water');
+const balance_table = db.collection('balance_table');
 const tabel = db.collection('tabel');
 const dbCmd = db.command
 // 时间转时间戳(获取清单时后端会先把时间戳转为0区的时间，这里再判断一下转为8区)
@@ -44,13 +45,20 @@ const getDate = (day = 0, cut = 0, e = null) => {
 }
 // 获取余额
 const getBalance = async (e) => {
-	let balance = null
+	// return new Promise((resolve, reject) =>)
+	let data = null
 	if (e === 'cat') {
-		balance = await cat_flowing_water.get()
-		return balance = balance.data[balance.data.length - 1].balance
+		data = await balance_table.where({
+			role: "cat"
+		}).get()
+		let balance = data.data[0].balance
+		return balance
 	} else {
-		balance = await dog_flowing_water.get()
-		return balance = balance.data[balance.data.length - 1].balance
+		data = await balance_table.where({
+			role: "dog"
+		}).get()
+		let balance = data.data[0].balance
+		return balance
 	}
 }
 
@@ -135,7 +143,12 @@ module.exports = {
 					create_time: changeDate(Date.now())
 				})
 			})
-
+			await balance_table.doc('6462da120c801ca8787f41c0').update({
+				balance: balanceDog + money
+			});
+			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
+				balance: balanceCat - money
+			});
 
 		}
 		if (creater === 'dog' && label === '643c0e9be766bb29750948b5') {
@@ -155,9 +168,15 @@ module.exports = {
 					label: "643c0f0d819ce8bdcf7902ea",
 					create_time: changeDate(Date.now())
 				}).then(res => {
-					console.log(res);
+					// console.log(res);
 				})
 			})
+			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
+				balance: balanceCat + money
+			});
+			await balance_table.doc('6462da120c801ca8787f41c0').update({
+				balance: balanceDog - money
+			});
 		}
 
 		if (creater === 'dog' && label != '643c0e9be766bb29750948b5') {
@@ -169,6 +188,12 @@ module.exports = {
 				label: label,
 				create_time: changeDate(Date.now())
 			})
+			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
+				balance: balanceCat + money
+			});
+			await balance_table.doc('6462da120c801ca8787f41c0').update({
+				balance: balanceDog - money
+			});
 		}
 
 		if (creater === 'cat' && label != '643c0e9be766bb29750948b5') {
@@ -180,6 +205,13 @@ module.exports = {
 				label: label,
 				create_time: changeDate(Date.now())
 			})
+
+			await balance_table.doc('6462da120c801ca8787f41c0').update({
+				balance: balanceDog + money
+			});
+			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
+				balance: balanceCat - money
+			});
 		}
 		// 返回结果
 		return {
@@ -228,6 +260,13 @@ module.exports = {
 				label: label,
 				create_time: changeDate(Date.now())
 			})
+			await balance_table.doc('6462da120c801ca8787f41c0').update({
+				balance: balanceDog + money
+			});
+			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
+				balance: balanceCat - money
+			});
+
 		} else {
 			cat_flowing_water.add({
 				name: name,
@@ -237,6 +276,13 @@ module.exports = {
 				label: label,
 				create_time: changeDate(Date.now())
 			})
+
+			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
+				balance: balanceCat + money
+			});
+			await balance_table.doc('6462da120c801ca8787f41c0').update({
+				balance: balanceDog - money
+			});
 		}
 
 	},
@@ -269,7 +315,7 @@ module.exports = {
 		}
 		start = changeDateGet(start)
 		end = changeDateGet(end)
-		console.log(start, end);
+		// console.log(start, end);
 		let data = await water.aggregate()
 			.lookup({
 				from: 'label',
@@ -298,7 +344,7 @@ module.exports = {
 		// 去掉重复的日期
 		dateList = new Set(dateList.map(t => JSON.stringify(t)))
 		dateList = [...dateList].map(s => JSON.parse(s))
-		console.log(data, dateList);
+		// console.log(data, dateList);
 		for (let i = 0; i < dateList.length; i++) {
 			dateList[i].water = []
 			dateList[i].outMoney = 0
@@ -337,7 +383,8 @@ module.exports = {
 		let m = myDate.getMonth() + 1
 		m = m < 10 ? "0" + m : m
 		let start = y + "-" + m + "-" + "01 00:00:00"
-		let nowNum = myDate.getDay()
+		let nowNum = myDate.getDate()
+		// console.log(nowNum);
 		myDate.setMonth(m);
 		myDate.setDate(0)
 		let dayNum = myDate.getDate() //本月天数
@@ -353,14 +400,14 @@ module.exports = {
 
 		start = changeDateGet(start)
 		end = changeDateGet(end)
-		console.log(start, end);
+
 		let data = await water.where({
 			create_time: dbCmd.gt(start).and(dbCmd.lt(end))
 		}).get()
 		data = data.data
 
 		let newData = {}
-		newData.balance = data[data.length - 1].balance
+		newData.balance = await getBalance(role)
 		newData.outMoney = 0
 		for (let i = 0; i < data.length; i++) {
 			if (data[i].type === 1) {

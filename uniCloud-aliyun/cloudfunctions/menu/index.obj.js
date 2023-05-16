@@ -20,7 +20,7 @@ module.exports = {
 
 		// 业务逻辑
 		console.log(param);
-		let data = await menu.add(arr)
+		let data = await menu.add(param)
 		if (data) {
 			return {
 				data //请根据实际需要返回值
@@ -36,12 +36,12 @@ module.exports = {
 		if (keyWord === '') {
 			data = await menu.where({
 					_id: dbCmd.exists(true)
-				}).skip((page - 1) * pageSize) // 跳过前20条
+				}).orderBy("created_time", "desc").skip((page - 1) * pageSize) // 跳过前20条
 				.limit(pageSize).get() // 获取20条.get()
 		} else {
 			data = await menu.where({
 					name: new RegExp(keyWord)
-				}).skip((page - 1) * pageSize) // 跳过前20条
+				}).orderBy("created_time", "desc").skip((page - 1) * pageSize) // 跳过前20条
 				.limit(pageSize).get() // 获取20条.get()
 		}
 		data = data.data
@@ -56,6 +56,14 @@ module.exports = {
 		menu.where({
 			_id: dbCmd.exists(true)
 		}).remove()
+	},
+
+	test() {
+		menu.where({
+			_id: dbCmd.exists(true)
+		}).update({
+			created_time: 1682062799000
+		})
 	}
 
 

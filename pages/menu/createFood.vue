@@ -202,7 +202,8 @@
 			name: data.data.name,
 			url: file.fileID,
 			type: data.data.type,
-			step: changeStep
+			step: changeStep,
+			created_time: new Date().valueOf()
 		}).then(res => {
 			data.title = "已创建！"
 			data.showMessage = true
@@ -278,14 +279,7 @@
 
 	// 新增步骤
 	function addStep() {
-		if (data.data.step.length <= 11) {
-			data.data.step.push('')
-		} else {
-			data.showMessage = true
-			data.title = '不能再新增步骤了'
-			return
-		}
-
+		data.data.step.push('')
 	}
 
 

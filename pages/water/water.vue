@@ -134,7 +134,7 @@
 								</view>
 							</view>
 							<view style="font-weight: 400;font-size: 30rpx;margin-right: 48rpx;" class="c">
-								-{{item.outMoney}}
+								-{{item.outMoney.toFixed(2)}}
 							</view>
 						</view>
 						<!-- 收入 -->
@@ -144,7 +144,7 @@
 								</view>
 							</view>
 							<view style="font-weight: 400;font-size: 30rpx;" class="c">
-								+{{item.inMoney}}
+								+{{item.inMoney.toFixed(2)}}
 							</view>
 						</view>
 					</view>
