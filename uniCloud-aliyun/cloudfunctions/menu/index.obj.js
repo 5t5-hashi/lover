@@ -29,23 +29,35 @@ module.exports = {
 	},
 
 	// 关键字模糊搜索获取列表
-	async getList(keyWord, page, pageSize) {
+	async getList(keyWord, type, page, pageSize) {
 		page = parseInt(page)
 		pageSize = parseInt(pageSize)
 		let data = null
 		if (keyWord === '') {
 			data = await menu.where({
-					_id: dbCmd.exists(true)
+					type: type
 				}).orderBy("created_time", "desc").skip((page - 1) * pageSize) // 跳过前20条
 				.limit(pageSize).get() // 获取20条.get()
 		} else {
 			data = await menu.where({
-					name: new RegExp(keyWord)
+					name: new RegExp(keyWord),
+					type: type
 				}).orderBy("created_time", "desc").skip((page - 1) * pageSize) // 跳过前20条
 				.limit(pageSize).get() // 获取20条.get()
 		}
 		data = data.data
 
+		return {
+			data
+		}
+	},
+
+	// 获取菜谱详情
+	async getDetail(id) {
+		let data = await menu.where({
+			_id: id
+		}).limit(1).get()
+		data = data.data
 		return {
 			data
 		}
@@ -62,7 +74,7 @@ module.exports = {
 		menu.where({
 			_id: dbCmd.exists(true)
 		}).update({
-			created_time: 1682062799000
+			creater: "other"
 		})
 	}
 

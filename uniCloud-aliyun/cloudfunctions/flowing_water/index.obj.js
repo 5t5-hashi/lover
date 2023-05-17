@@ -188,9 +188,6 @@ module.exports = {
 				label: label,
 				create_time: changeDate(Date.now())
 			})
-			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
-				balance: balanceCat + money
-			});
 			await balance_table.doc('6462da120c801ca8787f41c0').update({
 				balance: balanceDog - money
 			});
@@ -206,9 +203,6 @@ module.exports = {
 				create_time: changeDate(Date.now())
 			})
 
-			await balance_table.doc('6462da120c801ca8787f41c0').update({
-				balance: balanceDog + money
-			});
 			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
 				balance: balanceCat - money
 			});

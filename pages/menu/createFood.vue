@@ -198,17 +198,23 @@
 
 		let file = await upload()
 		// console.log(file.fileID);
-		data.menuFun.createMenu({
-			name: data.data.name,
-			url: file.fileID,
-			type: data.data.type,
-			step: changeStep,
-			created_time: new Date().valueOf()
+		uni.getStorage({
+			key: 'role'
 		}).then(res => {
-			data.title = "已创建！"
-			data.showMessage = true
-			uni.navigateBack(1)
+			data.menuFun.createMenu({
+				name: data.data.name,
+				url: file.fileID,
+				type: data.data.type,
+				step: changeStep,
+				created_time: new Date().valueOf(),
+				creater: res.data
+			}).then(() => {
+				data.title = "已创建！"
+				data.showMessage = true
+				uni.navigateBack(1)
+			})
 		})
+
 	}
 
 	// 选择上传的文件
