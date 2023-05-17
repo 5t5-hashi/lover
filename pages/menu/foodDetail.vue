@@ -15,13 +15,16 @@
 
 	const options = getCurrentInstance()
 	const data = reactive({
-		menuFun: null
+		menuFun: null,
+		data: null
 	})
 
 
 	onMounted(() => {
 		data.menuFun = uniCloud.importObject('menu')
-		data.menuFun.getDetail(options.attrs.id)
+		data.menuFun.getDetail(options.attrs.id).then(res => {
+			data.data = res.data
+		})
 		// console.log(options.attrs.id);
 	})
 </script>

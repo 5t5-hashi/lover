@@ -57,7 +57,7 @@ module.exports = {
 		let data = await menu.where({
 			_id: id
 		}).limit(1).get()
-		data = data.data
+		data = data.data[0]
 		return {
 			data
 		}
