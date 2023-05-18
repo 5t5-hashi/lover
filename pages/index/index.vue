@@ -1,6 +1,9 @@
 <template>
-	<view class="box">
-		芝士{{data.name}}D主页
+	<view class="box" style="height: 1000px;">
+		<view class="a">
+			芝士{{data.name}}D主页
+		</view>
+
 		<button type="default" @click="jump('../menu/createFood')">添加菜品</button>
 		<button type="default" @click="logout">退出</button>
 	</view>
@@ -41,6 +44,13 @@
 </script>
 
 <style scoped>
+	.a {
+		height: 500px;
+		margin-top: 50px;
+		position: sticky;
+		top: 10px;
+	}
+
 	.top {
 		width: 100%;
 		padding: 0 56rpx;

@@ -44,9 +44,16 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
+		}, {
+			"path": "pages/menu/foodDetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
 	    ,{
-            "path" : "pages/menu/foodDetail",
+            "path" : "pages/menu/editFood",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",

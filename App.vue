@@ -78,6 +78,10 @@
 		font-size: 36rpx;
 	}
 
+	.fs20 {
+		font-size: 40rpx;
+	}
+
 	.fw7 {
 		font-weight: 700;
 	}
@@ -94,9 +98,14 @@
 		font-weight: 400;
 	}
 
+	.fw3 {
+		font-weight: 300;
+	}
+
 	.box {
 		height: 100%;
 		width: 100%;
 		padding: 62rpx 0rpx 0rpx 0rpx;
+		position: relative;
 	}
 </style>

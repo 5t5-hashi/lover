@@ -92,7 +92,7 @@
 			</view>
 			&nbsp;
 			<view>
-				上传
+				修改
 			</view>
 		</view>
 
@@ -292,6 +292,15 @@
 
 	onMounted(() => {
 		data.menuFun = uniCloud.importObject('menu')
+		uni.getStorage({
+			key: 'menuId',
+		}).then((prop : any) => {
+			data.menuFun.getDetail(prop.data).then(res => {
+				data.data = res.data
+
+
+			})
+		})
 	})
 </script>
 

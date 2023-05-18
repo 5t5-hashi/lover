@@ -106,8 +106,13 @@
 
 	// 跳转详情
 	function jumpDetail(e : any) : void {
-		uni.navigateTo({
-			url: `./foodDetail?id=${e._id}`
+		uni.setStorage({
+			key: 'menuId',
+			data: e._id,
+		}).then(() => {
+			uni.navigateTo({
+				url: `./foodDetail`
+			})
 		})
 	}
 
