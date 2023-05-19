@@ -1,15 +1,15 @@
 <template>
-	<view class="box">
+	<view class="box" v-if="data.data">
 		<!-- 返回图片 -->
 		<image src="@/static/back.svg" mode="aspectFill"
-			style="margin-bottom: 43px;width: 20px;height: 14px;margin-top: 30px;" @click="back"></image>
+			style="margin-bottom: 86rpx;width: 40rpx;height: 28rpx;margin-top: 60rpx;" @click="back"></image>
 		<!-- 添加图片 -->
-		<view style="margin-bottom: 20px">
+		<view style="margin-bottom: 40rpx">
 			<image v-if="data.data.url===''" src="@/static/addFoodCover.svg" mode="aspectFill"
-				style="height: 80px;width: 110px;" @click="select">
+				style="height: 160rpx;width: 220rpx;" @click="select">
 			</image>
 
-			<image v-else :src="data.data.url" mode="aspectFill" style="height: 80px;width: 110px;" @click="select">
+			<image v-else :src="data.data.url" mode="aspectFill" style="height: 160rpx;width: 220rpx;" @click="select">
 			</image>
 
 		</view>
@@ -40,7 +40,7 @@
 		<view class="materialList">
 
 			<view class="c24 fs16" v-for="(item,index) in data.data.materialList" :key="index"
-				style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 10px;">
+				style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 20rpx;">
 				<view class="fw5 materialName">
 					<input type="text" v-model="item.name" placeholder="食材名称" placeholder-class="placeholder">
 				</view>
@@ -104,6 +104,10 @@
 	import { onMounted, reactive } from "vue";
 	import message from "@/components/message.vue"
 	import { textareaToHtml } from "@/utils.js"
+	import {
+		onShow,
+		onLoad
+	} from "@dcloudio/uni-app";
 	const data = reactive({
 		data: {
 			name: "",
@@ -136,6 +140,8 @@
 			{ id: "6", name: "饮品" },
 			{ id: "7", name: "汤" },
 		],
+		id: "",
+		choseImage: false
 	})
 
 
@@ -195,13 +201,18 @@
 		}
 		// console.log(changeStep);
 		// console.log(data.data);
+		let file : any = {}
+		if (data.choseImage) {
+			file = await upload()
+		} else {
+			file.fileID = data.data.url
+		}
 
-		let file = await upload()
 		// console.log(file.fileID);
 		uni.getStorage({
 			key: 'role'
 		}).then(res => {
-			data.menuFun.createMenu({
+			data.menuFun.updateMenu(data.id, {
 				name: data.data.name,
 				url: file.fileID,
 				type: data.data.type,
@@ -209,7 +220,7 @@
 				created_time: new Date().valueOf(),
 				creater: res.data
 			}).then(() => {
-				data.title = "已创建！"
+				data.title = "已更新！"
 				data.showMessage = true
 				uni.navigateBack(1)
 			})
@@ -256,6 +267,7 @@
 				extension: ['.png', '.jpg'],
 				success: function (res) {
 					console.log(res);
+					data.choseImage = true
 					resolve(res.tempFilePaths[0])
 				}
 			});
@@ -290,97 +302,94 @@
 
 
 
-	onMounted(() => {
+
+
+	onLoad((options) => {
+		data.id = options.id
 		data.menuFun = uniCloud.importObject('menu')
-		uni.getStorage({
-			key: 'menuId',
-		}).then((prop : any) => {
-			data.menuFun.getDetail(prop.data).then(res => {
-				data.data = res.data
-
-
-			})
+		data.menuFun.getDetail(data.id).then(res => {
+			data.data = res.data
 		})
 	})
 </script>
 
 <style scoped>
 	.box {
-		padding: 23px 20px 0 20px;
+		padding: 46rpx 40rpx 0 40rpx;
 	}
 
 	.inputName {
 		width: 100%;
-		height: 46px;
-		padding: 11px 20px 11px 14px;
-		border: 1px solid rgba(36, 36, 36, 0.1);
-		border-radius: 6px;
-		margin-top: 10px;
-		margin-bottom: 20px;
+		height: 92rpx;
+		padding: 22rpx 40rpx 22rpx 28rpx;
+		border: 2rpx solid rgba(36, 36, 36, 0.1);
+		border-radius: 12rpx;
+		margin-top: 20rpx;
+		margin-bottom: 40rpx;
 	}
 
 	.inputName input {
-		font-size: 14px;
+		font-size: 28rpx;
 	}
 
 	.materialList {
-		margin-top: 10px;
+		margin-top: 20rpx;
 		width: 100%;
-		margin-bottom: 18px;
+		margin-bottom: 36rpx;
 	}
 
 	.material {
-		margin-bottom: 10px;
+		margin-bottom: 20rpx;
 		width: 100%;
-		height: 56px;
+		height: 112rpx;
 		background: #FAFAFA;
-		border-radius: 6px;
+		border-radius: 12rpx;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 14px 20px 14px 14px;
+		padding: 28rpx 40rpx 28rpx 28rpx;
 	}
 
 	.addIconBox {
-		width: 56px;
-		height: 56px;
+		width: 112rpx;
+		height: 112rpx;
 		background: #FAFAFA;
-		border-radius: 6px;
+		border-radius: 12rpx;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 	}
 
 	.addIcon {
-		width: 24px;
-		height: 24px;
-		border: 2px solid #242424;
-		border-radius: 12px;
+		width: 48rpx;
+		height: 48rpx;
+		border: 4rpx solid #242424;
+		border-radius: 24rpx;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 
 	.submit {
-		width: calc(100vw - 40px);
-		height: 56px;
+		width: calc(100vw - 80rpx);
+		height: 112rpx;
 		background: #C7E94E;
-		border-radius: 12px;
+		border-radius: 24rpx;
 		font-weight: 600;
-		font-size: 14px;
+		font-size: 28rpx;
 		color: #242424;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		position: fixed;
-		bottom: 32px;
-		border: 1px solid #242424;
+		bottom: 64rpx;
+		border: 2rpx solid #242424;
 		z-index: 9;
 	}
 
 	.imageStyles {
-		height: 80px;
-		width: 131px;
+		height: 160rpx;
+		width: 262rpx;
 		object-fit: cover;
 		background: url('@/static/addFoodCover.svg');
 	}
@@ -397,87 +406,87 @@
 	}
 
 	.selectType {
-		padding: 8px 8px;
+		padding: 16rpx 16rpx;
 		background: #DDFF80;
-		border: 1px solid #242424;
-		border-radius: 8px;
-		font-size: 14px;
+		border: 2rpx solid #242424;
+		border-radius: 16rpx;
+		font-size: 28rpx;
 		color: #242424;
 		font-weight: 600;
 	}
 
 	.unselectType {
-		padding: 8px 8px;
+		padding: 16rpx 16rpx;
 		background: #F5F5F5;
-		border: 1px solid #F5F5F5;
-		border-radius: 8px;
-		font-size: 14px;
+		border: 2rpx solid #F5F5F5;
+		border-radius: 16rpx;
+		font-size: 28rpx;
 		color: rgba(36, 36, 36, 0.3);
 		font-weight: 600;
 	}
 
 	.materialName {
-		width: 211px;
-		padding: 14px 20px 14px 14px;
+		width: 422rpx;
+		padding: 28rpx 40rpx 28rpx 28rpx;
 		background: #FAFAFA;
-		border-radius: 8px;
+		border-radius: 16rpx;
 	}
 
 	.materialDosage {
-		width: 134px;
-		padding: 14px 20px 14px 14px;
+		width: 268rpx;
+		padding: 28rpx 40rpx 28rpx 28rpx;
 		background: #FAFAFA;
-		border-radius: 8px;
+		border-radius: 16rpx;
 	}
 
 	.placeholder {
 		font-weight: 500;
-		font-size: 16px;
+		font-size: 32rpx;
 		color: rgba(36, 36, 36, 0.4);
 	}
 
 	.placeholder2 {
 		font-weight: 500;
-		font-size: 14px;
+		font-size: 28rpx;
 		color: rgba(36, 36, 36, 0.4);
 	}
 
 	.step {
-		margin-bottom: 10px;
+		margin-bottom: 20rpx;
 		width: 100%;
 	}
 
 	.stepTitle {
 		text-align: center;
 		font-weight: 700;
-		font-size: 14px;
+		font-size: 28rpx;
 		color: #242424;
 	}
 
 	.stepDetail {
-		padding: 14px 20px 14px 14px;
+		padding: 28rpx 40rpx 28rpx 28rpx;
 		width: 100%;
 		background: #FAFAFA;
-		border-radius: 8px;
-		margin-top: 8px;
+		border-radius: 16rpx;
+		margin-top: 16rpx;
 	}
 
 	.stepBox {
-		padding-bottom: 100px;
+		padding-bottom: 200rpx;
 	}
 
 	textarea {
-		/* height: 20px; */
+		/* height: 40rpx; */
 	}
 
 	[contenteditable] {
-		outline: 1px solid transparent;
+		outline: 2rpx solid transparent;
 		border: none;
 		width: 100%;
 	}
 
 	[contenteditable]:focus {
 		border: none;
-		border-radius: 3px;
+		border-radius: 6rpx;
 	}
 </style>

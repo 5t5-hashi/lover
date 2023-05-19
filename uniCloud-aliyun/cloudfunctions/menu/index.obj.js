@@ -28,6 +28,11 @@ module.exports = {
 		}
 	},
 
+	// 更新菜单
+	async updateMenu(id, param) {
+		let data = await menu.doc(id).update(param);
+	},
+
 	// 关键字模糊搜索获取列表
 	async getList(keyWord, type, page, pageSize) {
 		page = parseInt(page)

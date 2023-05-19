@@ -6,7 +6,7 @@
 					菜谱
 				</view>
 
-				<view style="margin-left:25px ;" :class="[data.type===2?'selectType':'unselectType']"
+				<view style="margin-left:50rpx ;" :class="[data.type===2?'selectType':'unselectType']"
 					@click="choseType(2)">
 					饮食计划
 				</view>
@@ -25,26 +25,23 @@
 			</view>
 		</view>
 
-		<view style="padding-bottom: 100px;display: flex;justify-content: space-between;flex-wrap: wrap;">
+		<scroll-view scroll-y="true" class="scrollList" style="height: calc(100vh - 430rpx);" @scrolltolower="loadMore"
+			@refresherrefresh="refresherrefresh" refresher-enabled>
 			<view class="item" v-for="(item,index) in data.data" :key="index" @click="jumpDetail(item)">
-				<image :src="item.url" mode="aspectFill" style="height: 106px;width: 106px;border-radius: 8px;"></image>
+				<image :src="item.url" mode="aspectFill" style="height: 212rpx;width: 212rpx;border-radius: 16rpx;"
+					lazy-load></image>
 				<view class="itemName">
-					<image src="@/static/star.svg" mode="aspectFill" style="height: 14px;width: 14px;"></image>
+					<image src="@/static/star.svg" mode="aspectFill" style="height: 28rpx;width: 28rpx;"></image>
 					<view class="">
 						{{item.name}}
 					</view>
 				</view>
 			</view>
-			<view class="item" style="height: 106px;" v-if="data.data.length%3===2">
+			<view class="item" style="height: 212rpx;" v-if="data.data.length%3===2">
 			</view>
-			<view class="" @click="init">
-				更多
-			</view>
-
-
-		</view>
-		<view style="position: fixed;bottom: 86px;right: 20px;">
-			<image src="@/static/createFood.svg" mode="aspectFill" style="width: 88px;height: 84px;"
+		</scroll-view>
+		<view style="position: fixed;bottom: 172rpx;right: 40rpx;">
+			<image src="@/static/createFood.svg" mode="aspectFill" style="width: 176rpx;height: 168rpx;"
 				@click="jumpCreate"></image>
 		</view>
 
@@ -53,6 +50,7 @@
 
 <script setup lang="ts">
 	import { onMounted, reactive } from "vue";
+
 
 	const data = reactive({
 		keyWrod: "",
@@ -67,7 +65,7 @@
 		menuFun: null,
 		data: [],
 		page: 1,
-		pageSize: 20,
+		pageSize: 21,
 		type: 1,
 		menuType: "1"
 	})
@@ -106,15 +104,11 @@
 
 	// 跳转详情
 	function jumpDetail(e : any) : void {
-		uni.setStorage({
-			key: 'menuId',
-			data: e._id,
-		}).then(() => {
-			uni.navigateTo({
-				url: `./foodDetail`
-			})
+		uni.navigateTo({
+			url: `./foodDetail?id=${e._id}`
 		})
 	}
+
 
 	function jumpCreate() : void {
 		uni.navigateTo({
@@ -122,7 +116,16 @@
 		})
 	}
 
+	function loadMore() : void {
+		init()
+	}
 
+
+	function refresherrefresh() : void {
+		data.page = 1
+		data.data = []
+		init()
+	}
 
 	onMounted(() => {
 		data.menuFun = uniCloud.importObject('menu')
@@ -140,14 +143,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: 26px;
+		margin-bottom: 52rpx;
 	}
 
 	.selectType {
 		font-family: 'F';
 		font-style: normal;
 		font-weight: 500;
-		font-size: 22px;
+		font-size: 44rpx;
 		color: #242424;
 	}
 
@@ -155,15 +158,15 @@
 		font-family: 'F';
 		font-style: normal;
 		font-weight: 500;
-		font-size: 22px;
+		font-size: 44rpx;
 		color: rgba(36, 36, 36, 0.4);
 	}
 
 	.inputBox {
-		width: 159px;
-		height: 40px;
+		width: 318rpx;
+		height: 80rpx;
 		background: #FAFAFA;
-		border-radius: 8px;
+		border-radius: 16rpx;
 		position: relative;
 	}
 
@@ -178,48 +181,48 @@
 	input {
 		position: absolute;
 		top: 18rpx;
-		left: 18px;
-		width: 90px;
+		left: 36rpx;
+		width: 180rpx;
 		font-size: 28rpx;
 	}
 
 	.menuType {
 		display: flex;
 		align-items: center;
-		/* width: 353px; */
-		height: 40px;
+		/* width: 706rpx; */
+		height: 80rpx;
 		background: #F8F8F8;
-		border-radius: 8px;
-		margin-bottom: 20px;
+		border-radius: 16rpx;
+		margin-bottom: 40rpx;
 	}
 
 	.selectMenuType {
-		padding: 8px 10px;
+		padding: 16rpx 20rpx;
 		background: #DDFF80;
-		border: 1px solid #242424;
-		border-radius: 8px;
+		border: 2rpx solid #242424;
+		border-radius: 16rpx;
 		flex: none;
 		/* flex-grow: 1; */
 		font-weight: 600;
-		font-size: 14px;
+		font-size: 28rpx;
 		color: #242424;
 	}
 
 	.unselectMenuType {
-		padding: 8px 10px;
+		padding: 16rpx 20rpx;
 		background: #F8F8F8;
-		border: 1px solid #F8F8F8;
-		border-radius: 8px;
+		border: 2rpx solid #F8F8F8;
+		border-radius: 16rpx;
 		flex: none;
 		/* flex-grow: 1; */
 		font-weight: 600;
-		font-size: 14px;
+		font-size: 28rpx;
 		color: rgba(36, 36, 36, 0.3);
 	}
 
 	.item {
-		width: 106px;
-		margin-bottom: 12px;
+		width: 212rpx;
+		margin-bottom: 24rpx;
 	}
 
 	.itemName {
@@ -228,20 +231,29 @@
 	}
 
 	.itemName view {
-		width: 75px;
+		width: 150rpx;
 		font-style: normal;
 		font-weight: 600;
-		font-size: 14px;
+		font-size: 28rpx;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		color: #242424;
 	}
 
+	.scrollList>>>.uni-scroll-view-content {
+		padding-bottom: 200rpx;
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		height: calc(100vh - 430rpx);
+
+	}
 
 
-
-
+	.scrollList>>>.uni-scroll-view-refresher {
+		display: none;
+	}
 
 
 
