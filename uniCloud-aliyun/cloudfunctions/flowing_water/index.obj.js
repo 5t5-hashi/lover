@@ -125,61 +125,7 @@ module.exports = {
 		let balanceDog = await getBalance('dog')
 		money = parseFloat(money).toFixed(2)
 		money = Number(money)
-		if (creater === 'cat' && label === '643c0e9be766bb29750948b5') {
-			cat_flowing_water.add({
-				name: name,
-				type: 1,
-				money: money,
-				balance: balanceCat - money,
-				label: label,
-				create_time: changeDate(Date.now())
-			}).then(() => {
-				dog_flowing_water.add({
-					name: "转账",
-					type: 2,
-					money: money,
-					balance: balanceDog + money,
-					label: "643c0f0d819ce8bdcf7902ea",
-					create_time: changeDate(Date.now())
-				})
-			})
-			await balance_table.doc('6462da120c801ca8787f41c0').update({
-				balance: balanceDog + money
-			});
-			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
-				balance: balanceCat - money
-			});
-
-		}
-		if (creater === 'dog' && label === '643c0e9be766bb29750948b5') {
-			dog_flowing_water.add({
-				name: name,
-				type: 1,
-				money: money,
-				balance: balanceDog - money,
-				label: label,
-				create_time: changeDate(Date.now())
-			}).then(() => {
-				cat_flowing_water.add({
-					name: "转账",
-					type: 2,
-					money: money,
-					balance: balanceCat + money,
-					label: "643c0f0d819ce8bdcf7902ea",
-					create_time: changeDate(Date.now())
-				}).then(res => {
-					// console.log(res);
-				})
-			})
-			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
-				balance: balanceCat + money
-			});
-			await balance_table.doc('6462da120c801ca8787f41c0').update({
-				balance: balanceDog - money
-			});
-		}
-
-		if (creater === 'dog' && label != '643c0e9be766bb29750948b5') {
+		if (creater === 'dog') {
 			dog_flowing_water.add({
 				name: name,
 				type: 1,
@@ -191,9 +137,7 @@ module.exports = {
 			await balance_table.doc('6462da120c801ca8787f41c0').update({
 				balance: balanceDog - money
 			});
-		}
-
-		if (creater === 'cat' && label != '643c0e9be766bb29750948b5') {
+		} else {
 			cat_flowing_water.add({
 				name: name,
 				type: 1,
@@ -257,9 +201,6 @@ module.exports = {
 			await balance_table.doc('6462da120c801ca8787f41c0').update({
 				balance: balanceDog + money
 			});
-			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
-				balance: balanceCat - money
-			});
 
 		} else {
 			cat_flowing_water.add({
@@ -273,9 +214,6 @@ module.exports = {
 
 			await balance_table.doc('6462d9e328064a7587b0b3c3').update({
 				balance: balanceCat + money
-			});
-			await balance_table.doc('6462da120c801ca8787f41c0').update({
-				balance: balanceDog - money
 			});
 		}
 

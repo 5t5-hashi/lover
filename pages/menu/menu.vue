@@ -11,47 +11,117 @@
 					饮食计划
 				</view>
 			</view>
-			<view class="inputBox">
+			<view class="inputBox" v-if="data.type===1">
 				<input type="text" @input="inputWrod" v-model="data.keyWrod">
 				<image src="@/static/search.svg" mode="aspectFill" id="searchIcon">
 				</image>
 			</view>
-		</view>
+			<view v-if="data.type===2" class="inputBox" style="background-color: #fff;">
 
-		<view class="menuType">
-			<view v-for="(item,index) in data.menuTypeList" :key="index"
-				:class="[data.menuType===item.id?'selectMenuType':'unselectMenuType']" @click="choseMenuType(item.id)">
-				{{item.name}}
 			</view>
 		</view>
 
-		<scroll-view scroll-y="true" class="scrollList" style="height: calc(100vh - 430rpx);" @scrolltolower="loadMore"
-			@refresherrefresh="refresherrefresh" refresher-enabled>
-			<view class="item" v-for="(item,index) in data.data" :key="index" @click="jumpDetail(item)">
-				<image :src="item.url" mode="aspectFill" style="height: 212rpx;width: 212rpx;border-radius: 16rpx;"
-					lazy-load></image>
-				<view class="itemName">
-					<image src="@/static/star.svg" mode="aspectFill" style="height: 28rpx;width: 28rpx;"></image>
-					<view class="">
+		<!-- 菜谱 -->
+		<template v-if="data.type===1">
+			<view class="menuType">
+				<view v-for="(item,index) in data.menuTypeList" :key="index"
+					:class="[data.menuType===item.id?'selectMenuType':'unselectMenuType']"
+					@click="choseMenuType(item.id)">
+					{{item.name}}
+				</view>
+			</view>
+
+			<scroll-view scroll-y="true" class="scrollList" style="height: calc(100vh - 320rpx);"
+				@scrolltolower="loadMore" @refresherrefresh="refresherrefresh" refresher-enabled>
+				<view class="item" v-for="(item,index) in data.data" :key="index" @click="jumpDetail(item)">
+					<image :src="item.url" mode="aspectFill" style="height: 212rpx;width: 212rpx;border-radius: 16rpx;"
+						lazy-load></image>
+					<view class="itemName">
+						<image src="@/static/star.svg" mode="aspectFill" style="height: 28rpx;width: 28rpx;"></image>
+						<view class="">
+							{{item.name}}
+						</view>
+					</view>
+				</view>
+				<view class="item" style="height: 212rpx;" v-if="data.data.length%3===2">
+				</view>
+			</scroll-view>
+			<view style="position: fixed;bottom: 172rpx;right: 40rpx;">
+				<image src="@/static/createFood.svg" mode="aspectFill" style="width: 176rpx;height: 168rpx;"
+					@click="jumpCreate"></image>
+			</view>
+		</template>
+
+
+		<!-- 饮食计划 -->
+		<template v-else>
+			<view class="dayType">
+				<view v-for="(item,index) in data.dayList" :key="index"
+					:class="[data.day===index?'selectDayType':'unselectDayType']" @click="choseDayType(index)">
+					<text v-if="index===0">今天</text>
+					<text v-if="index===1">明天</text>
+					<text v-if="index===2">后天</text>
+				</view>
+			</view>
+
+			<!-- 午餐晚餐 -->
+			<view class="planBox" v-if="data.item">
+				<view class="plan">
+					<image src="@/static/wucan.svg" mode="aspectFill" style="height: 28px;width: 58px;"></image>
+					<view class="flex">
+						<template v-for="(item,index) in data.item.foodList" :key="index">
+							<view v-if="item.time_type=='1'">
+								{{item.name}}
+							</view>
+						</template>
+
+						<image src="@/static/greenEdit.svg" mode="aspectFill"
+							style="margin-left: 20px;width: 24px;height: 24px;"></image>
+					</view>
+				</view>
+				<view class="plan" style="margin-top: 24px;">
+					<image src="@/static/wancan.svg" mode="aspectFill" style="height: 28px;width: 58px;"></image>
+					<view class="flex">
+						<template v-for="(item,index) in data.item.foodList" :key="index">
+							<view v-if="item.time_type=='2'">
+								{{item.name}}
+							</view>
+						</template>
+
+						<image src="@/static/greenEdit.svg" mode="aspectFill"
+							style="margin-left: 20px;width: 24px;height: 24px;"></image>
+					</view>
+				</view>
+			</view>
+
+			<!-- 食物清单 -->
+			<view class="planBox">
+				<view class="planTop">
+					<image src="@/static/shoppingBag.svg" mode="aspectFill" style="height: 24px;width: 24px;"></image>
+					<view style="margin-left: 6px;">
+						食材清单
+					</view>
+				</view>
+
+				<view class="foodList">
+					<view :class="[item.name===data.foodName?'selectFood':'unselectFood']" style="margin-right: 16px;"
+						v-for="(item,index) in data.item.foodList" :key="index" @click="choseFood(item.name)">
 						{{item.name}}
 					</view>
 				</view>
 			</view>
-			<view class="item" style="height: 212rpx;" v-if="data.data.length%3===2">
-			</view>
-		</scroll-view>
-		<view style="position: fixed;bottom: 172rpx;right: 40rpx;">
-			<image src="@/static/createFood.svg" mode="aspectFill" style="width: 176rpx;height: 168rpx;"
-				@click="jumpCreate"></image>
-		</view>
+		</template>
 
 	</view>
 </template>
 
 <script setup lang="ts">
 	import { onMounted, reactive } from "vue";
-
-
+	import { getDate } from "@/utils.js"
+	import {
+		onShow,
+		onLoad
+	} from "@dcloudio/uni-app";
 	const data = reactive({
 		keyWrod: "",
 		menuTypeList: [
@@ -67,7 +137,12 @@
 		page: 1,
 		pageSize: 21,
 		type: 1,
-		menuType: "1"
+		menuType: "1",
+		day: 0,
+		dayList: [
+		],
+		item: null,
+		foodName: ""
 	})
 
 	// 搜索框输入
@@ -80,6 +155,9 @@
 
 	// 选择类型
 	function choseType(e : number) : void {
+		if (e === 2) {
+			init2()
+		}
 		data.type = e
 	}
 
@@ -99,6 +177,14 @@
 				data.data = [...data.data, ...res.data]
 				data.page = data.page + 1
 			}
+		})
+	}
+
+
+	function init2() : void {
+		data.menuFun.getPlan().then(res => {
+			data.dayList = res.data
+			data.item = data.dayList[0]
 		})
 	}
 
@@ -127,8 +213,23 @@
 		init()
 	}
 
-	onMounted(() => {
+	function choseDayType(e : number) : void {
+		data.day = e
+		data.item = data.dayList[e]
+	}
+
+	// 选择食物
+	function choseFood(e : string) : void {
+		data.foodName = e
+	}
+
+
+	onLoad(() => {
 		data.menuFun = uniCloud.importObject('menu')
+	})
+
+
+	onShow(() => {
 		init()
 	})
 </script>
@@ -246,8 +347,10 @@
 		display: flex;
 		justify-content: space-between;
 		flex-wrap: wrap;
-		height: calc(100vh - 430rpx);
+	}
 
+	.scrollList {
+		/* height: calc(100vh - 300rpx); */
 	}
 
 
@@ -302,5 +405,102 @@
 		height: 220rpx;
 		border-radius: 16rpx 16rpx 0rpx 0rpx;
 		margin-bottom: 30rpx;
+	}
+
+	.dayType {
+		margin-bottom: 20px;
+		width: 353px;
+		background: #FAFAFA;
+		border-radius: 8px;
+		display: flex;
+		/* border: 1px solid #FAFAFA; */
+		text-align: center;
+		font-weight: 700;
+		font-size: 14px;
+	}
+
+	.planList {
+		width: 100%;
+		height: 108px;
+		border: 1px solid #242424;
+		border-radius: 8px;
+		padding: 16px 14px;
+	}
+
+	.selectDayType {
+		padding: 8px 12px;
+		gap: 10px;
+		flex: 1;
+		height: 40px;
+		background: #DDFF80;
+		color: #242424;
+		border: 1px solid #242424;
+		border-radius: 8px;
+	}
+
+	.unselectDayType {
+		padding: 8px 12px;
+		gap: 10px;
+		flex: 1;
+		height: 40px;
+		background: #FAFAFA;
+		border: 1px solid #FAFAFA;
+		border-radius: 8px;
+		color: rgba(36, 36, 36, 0.3);
+	}
+
+	.planBox {
+		align-items: flex-start;
+		padding: 16px 14px;
+		width: 100%;
+		border: 1px solid #242424;
+		border-radius: 8px;
+		color: #242424;
+		font-size: 14px;
+		font-weight: 600;
+		margin-bottom: 20px;
+	}
+
+	.plan {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.planTop {
+		display: flex;
+		align-items: center;
+		font-weight: 600;
+		font-size: 14px;
+		color: #242424;
+		border-bottom: 1px solid #EBEBEB;
+		padding-bottom: 9px;
+		margin-bottom: 16px;
+	}
+
+	.foodList {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		font-weight: 500;
+		font-size: 12px;
+	}
+
+	.selectFood {
+		padding: 7px 11px;
+		height: 30px;
+		background: #DDFF80;
+		color: #242424;
+		border: 1px solid #242424;
+		border-radius: 4px;
+	}
+
+	.unselectFood {
+		padding: 7px 11px;
+		height: 30px;
+		background: #FAFAFA;
+		color: rgba(36, 36, 36, 0.3);
+		border: 1px solid #FAFAFA;
+		border-radius: 4px;
 	}
 </style>

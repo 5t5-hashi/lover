@@ -1,7 +1,10 @@
 {
-  "name": "menu",
-  "dependencies": {},
-  "extensions": {
-    "uni-cloud-jql": {}
-  }
+	"name": "menu",
+	"dependencies": {},
+	"extensions": {
+		"uni-cloud-jql": {}
+	},
+	"cloudfunction-config": {
+
+	}
 }

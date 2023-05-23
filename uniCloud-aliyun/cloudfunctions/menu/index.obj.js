@@ -3,7 +3,29 @@
 const db = uniCloud.database();
 const dbCmd = db.command
 const menu = db.collection('menu');
+const plan = db.collection('menu_plan');
+const getDate = (day = 0, cut = 0) => {
 
+	let mydate = new Date()
+	mydate = new Date(mydate.getTime() + mydate.getTimezoneOffset() * 60 * 1000 + 8 * 60 *
+		60 * 1000)
+
+	let y = mydate.getFullYear()
+	let m = mydate.getMonth() + 1
+	let d = mydate.getDate() + day
+	let h = mydate.getHours()
+	let min = mydate.getMinutes()
+	let s = mydate.getSeconds()
+	m = m < 10 ? "0" + m : m
+	d = d < 10 ? "0" + d : d
+	h = h < 10 ? "0" + h : h
+	min = min < 10 ? "0" + min : min
+	s = s < 10 ? "0" + s : s
+	let date = `${y}-${m}-${d} ${h}:${min}:${s}`
+
+	date = date.slice(0, cut)
+	return date;
+}
 
 module.exports = {
 	_before: function() { // 通用预处理器
@@ -63,6 +85,22 @@ module.exports = {
 			_id: id
 		}).limit(1).get()
 		data = data.data[0]
+		return {
+			data
+		}
+	},
+
+	// 获取饮食计划
+	async getPlan() {
+		let day1 = getDate(0, 10)
+		let day2 = getDate(1, 10)
+		let day3 = getDate(2, 10)
+		console.log(day1, day2, day3)
+		let data = await plan.where({
+			date: dbCmd.or(dbCmd.eq(day1), dbCmd.eq(day2), dbCmd.eq(day3))
+		}).get()
+
+		data = data.data
 		return {
 			data
 		}

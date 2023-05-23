@@ -4,7 +4,7 @@
 			芝士{{data.name}}D主页
 		</view>
 
-		<button type="default" @click="jump('../menu/createFood')">添加菜品</button>
+		<!-- <button type="default" @click="jump('../menu/createFood')">添加菜品</button> -->
 		<button type="default" @click="logout">退出</button>
 	</view>
 </template>

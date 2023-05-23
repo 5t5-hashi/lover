@@ -283,6 +283,10 @@
 	function getWater() : void {
 		data.api.getWater(data.role, data.startDate, data.endDate).then(res => {
 			data.list = res.data
+			data.list.reverse()
+			data.list.forEach(e => {
+				e.water.reverse()
+			})
 		})
 	}
 
