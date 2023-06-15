@@ -69,27 +69,24 @@
 				<view class="plan">
 					<image src="@/static/wucan.svg" mode="aspectFill" style="height: 28px;width: 58px;"></image>
 					<view class="flex">
-						<template v-for="(item,index) in data.item.foodList" :key="index">
-							<view v-if="item.time_type=='1'">
-								{{item.name}}
-							</view>
+						<template v-for="(item,index) in data.lunchList" :key="index">
+							{{item.name}} <text v-if="index<data.lunchList.length-1">/</text>
+
 						</template>
 
 						<image src="@/static/greenEdit.svg" mode="aspectFill"
-							style="margin-left: 20px;width: 24px;height: 24px;"></image>
+							style="margin-left: 20px;width: 24px;height: 24px;" @click="jumpEdit('lunch')"></image>
 					</view>
 				</view>
 				<view class="plan" style="margin-top: 24px;">
 					<image src="@/static/wancan.svg" mode="aspectFill" style="height: 28px;width: 58px;"></image>
 					<view class="flex">
-						<template v-for="(item,index) in data.item.foodList" :key="index">
-							<view v-if="item.time_type=='2'">
-								{{item.name}}
-							</view>
+						<template v-for="(item,index) in data.dinnerList" :key="index">
+							{{item.name}}<text v-if="index<data.dinnerList.length-1">/</text>
 						</template>
 
 						<image src="@/static/greenEdit.svg" mode="aspectFill"
-							style="margin-left: 20px;width: 24px;height: 24px;"></image>
+							style="margin-left: 20px;width: 24px;height: 24px;" @click="jumpEdit('dinner')"></image>
 					</view>
 				</view>
 			</view>
@@ -103,10 +100,24 @@
 					</view>
 				</view>
 
-				<view class="foodList">
-					<view :class="[item.name===data.foodName?'selectFood':'unselectFood']" style="margin-right: 16px;"
-						v-for="(item,index) in data.item.foodList" :key="index" @click="choseFood(item.name)">
-						{{item.name}}
+				<view class="foodList" v-if="data.item">
+					<view :class="[it.name===data.foodName?'selectFood':'unselectFood']" style="margin-right: 16px;"
+						v-for="(it,index) in data.allFood" :key="index" @click="choseFood(it)">
+						{{it.name}}
+					</view>
+				</view>
+
+				<view class="materialList">
+					<view class="material" v-for="(item,index) in data.materialList" :key="index"
+						@click="selectMaterial(item)">
+						<view
+							style="width: 18px;height: 18px;opacity: 0.2;border: 1px solid #242424;border-radius: 2px;margin-right: 10px;"
+							:class="[item.has?'boxSelect':'']">
+						</view>
+						<view class="">
+							{{item.name}}
+						</view>
+
 					</view>
 				</view>
 			</view>
@@ -142,7 +153,11 @@
 		dayList: [
 		],
 		item: null,
-		foodName: ""
+		foodName: "",
+		materialList: [],
+		dinnerList: [],
+		lunchList: [],
+		allFood: []
 	})
 
 	// 搜索框输入
@@ -184,7 +199,21 @@
 	function init2() : void {
 		data.menuFun.getPlan().then(res => {
 			data.dayList = res.data
-			data.item = data.dayList[0]
+			data.item = data.dayList[data.day]
+			data.lunchList = data.item.lunch
+			data.dinnerList = data.item.dinner
+			data.allFood = []
+			data.allFood = [...data.lunchList, ...data.dinnerList]
+
+			console.log(data.lunchList, data.dinnerList);
+			if (data.allFood.length != 0) {
+				data.foodName = data.allFood[0].name
+				data.materialList = data.allFood[0].materialList
+			} else {
+				data.foodName = ""
+				data.materialList = []
+			}
+			// data.item.foodList.length != 0 ? data.foodName = data.item.foodList[0].name : ""
 		})
 	}
 
@@ -216,13 +245,53 @@
 	function choseDayType(e : number) : void {
 		data.day = e
 		data.item = data.dayList[e]
+		init2()
 	}
 
 	// 选择食物
-	function choseFood(e : string) : void {
-		data.foodName = e
+	function choseFood(e : any) : void {
+		data.foodName = e.name
+		data.materialList = e.materialList
 	}
 
+
+	function jumpEdit(e : string) : void {
+		uni.navigateTo({
+			url: `./editFoodPlan?time=${e}&date=${data.day}`
+		})
+	}
+
+	// 选择是否有食材
+	function selectMaterial(e : any) : void {
+		e.has ? e.has = false : e.has = true
+		let type : string;
+		data.lunchList.forEach(el => {
+			console.log(el);
+			if (el.name == data.foodName) {
+				type = "lunch"
+			}
+		})
+		data.dinnerList.forEach(el => {
+			console.log(el);
+			if (el.name == data.foodName) {
+				type = "dinner"
+			}
+		})
+
+		let list : any[] = [];
+
+		if (type == 'dinner') {
+			list = data.dinnerList
+		} else if (type == 'lunch') {
+			list = data.lunchList
+		}
+		data.menuFun.updataPlan({
+			time: data.day,
+			foodList: list,
+			type: type
+		}).then(() => {
+		})
+	}
 
 	onLoad(() => {
 		data.menuFun = uniCloud.importObject('menu')
@@ -231,6 +300,7 @@
 
 	onShow(() => {
 		init()
+		init2()
 	})
 </script>
 
@@ -502,5 +572,20 @@
 		color: rgba(36, 36, 36, 0.3);
 		border: 1px solid #FAFAFA;
 		border-radius: 4px;
+	}
+
+	.material {
+		height: 80rpx;
+		width: 100%;
+		padding: 10px 10px 10px 12px;
+		background: #FAFAFA;
+		border-radius: 8px;
+		display: flex;
+		margin-top: 10px;
+		align-items: center;
+	}
+
+	.boxSelect {
+		background-color: red;
 	}
 </style>

@@ -106,6 +106,24 @@ module.exports = {
 		}
 	},
 
+	async updataPlan(parms) {
+		console.log(parms)
+		if (parms.type == 'lunch') {
+			let data = await plan.where({
+				date: dbCmd.eq(getDate(parms.time, 10)),
+			}).update({
+				lunch: parms.foodList,
+			})
+		} else if (parms.type == 'dinner') {
+			let data = await plan.where({
+				date: dbCmd.eq(getDate(parms.time, 10)),
+			}).update({
+				dinner: parms.foodList,
+			})
+		}
+
+
+	},
 	// 清除全部数据
 	clear() {
 		menu.where({

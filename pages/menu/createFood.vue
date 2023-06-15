@@ -205,6 +205,7 @@
 				name: data.data.name,
 				url: file.fileID,
 				type: data.data.type,
+				materialList: data.data.materialList,
 				step: changeStep,
 				created_time: new Date().valueOf(),
 				creater: res.data
@@ -408,7 +409,7 @@
 	}
 
 	.materialName {
-		width: 422rpx;
+		width: 380rpx;
 		padding: 28rpx 40rpx 28rpx 28rpx;
 		background: #FAFAFA;
 		border-radius: 16rpx;

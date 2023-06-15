@@ -147,6 +147,7 @@
 
 	// 新增食材列表项
 	function addMaterial() : void {
+
 		data.data.materialList.push({ name: "", dosage: "" })
 	}
 
@@ -216,6 +217,7 @@
 				name: data.data.name,
 				url: file.fileID,
 				type: data.data.type,
+				materialList: data.data.materialList,
 				step: changeStep,
 				created_time: new Date().valueOf(),
 				creater: res.data
@@ -309,6 +311,9 @@
 		data.menuFun = uniCloud.importObject('menu')
 		data.menuFun.getDetail(data.id).then(res => {
 			data.data = res.data
+			if (!data.data.materialList) {
+				data.data.materialList = [{ name: "", dosage: "" }]
+			}
 		})
 	})
 </script>
@@ -426,7 +431,7 @@
 	}
 
 	.materialName {
-		width: 422rpx;
+		width: 380rpx;
 		padding: 28rpx 40rpx 28rpx 28rpx;
 		background: #FAFAFA;
 		border-radius: 16rpx;

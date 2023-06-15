@@ -25,15 +25,8 @@ exports.main = async (event, context) => {
 
 	await plan.add({
 		date: newDate,
-		foodList: [{
-			name: "",
-			time_type: "1",
-			materialList: []
-		}, {
-			name: "",
-			time_type: "2",
-			materialList: []
-		}]
+		lunch: [],
+		dinner: []
 	}, )
 	//返回数据给客户端
 };
