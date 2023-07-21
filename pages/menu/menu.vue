@@ -47,7 +47,7 @@
 				</view>
 			</scroll-view>
 			<view style="position: fixed;bottom: 172rpx;right: 40rpx;">
-				<image src="@/static/createFood.svg" mode="aspectFill" style="width: 176rpx;height: 168rpx;"
+				<image src="@/static/createMenu.svg" mode="aspectFill" style="width: 166rpx;height: 172rpx;"
 					@click="jumpCreate"></image>
 			</view>
 		</template>

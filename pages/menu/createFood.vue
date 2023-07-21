@@ -5,8 +5,8 @@
 			style="margin-bottom: 86rpx;width: 40rpx;height: 28rpx;margin-top: 60rpx;" @click="back"></image>
 		<!-- 添加图片 -->
 		<view style="margin-bottom: 40rpx">
-			<image v-if="data.data.url===''" src="@/static/addFoodCover.svg" mode="aspectFill"
-				style="height: 160rpx;width: 220rpx;" @click="select">
+			<image v-if="data.data.url===''" src="@/static/addFood.svg" mode="aspectFill"
+				style="height: 230rpx;width: 160rpx;" @click="select">
 			</image>
 
 			<image v-else :src="data.data.url" mode="aspectFill" style="height: 160rpx;width: 220rpx;" @click="select">

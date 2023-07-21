@@ -27,7 +27,6 @@ module.exports = {
 				errMsg: '密码不能为空'
 			}
 		}
-
 		// 业务逻辑
 		let data = await user.where({
 			user_name: userName,

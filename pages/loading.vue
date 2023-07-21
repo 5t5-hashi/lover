@@ -16,7 +16,7 @@
 				key: '_id'
 			}).then((res) => {
 				uni.switchTab({
-					url: "./index/index"
+					url: "./water/water"
 				})
 			}).catch(err => {
 				uni.redirectTo({

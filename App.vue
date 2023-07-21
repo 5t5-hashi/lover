@@ -50,6 +50,18 @@
 		align-items: center;
 	}
 
+	.j_c_c {
+		justify-content: center;
+	}
+
+	.j_c_b {
+		justify-content: space-between;
+	}
+
+	.a_i_c {
+		align-items: center;
+	}
+
 	.c {
 		color: rgba(36, 36, 36, 1);
 	}

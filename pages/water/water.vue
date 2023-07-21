@@ -50,15 +50,13 @@
 					<!-- 统计右 -->
 					<view class="statisticsRight">
 						<view class="monthOut flex">
-							<view
-								style="font-weight: 400;font-size: 24rpx;color: rgba(36, 36, 36, 0.2);margin-right: 12rpx;">
+							<view style="font-weight: 400;font-size: 24rpx;color:#242424;margin-right: 12rpx;">
 								当月支出</view>
 							<view style="font-weight: 600;font-size: 28rpx;color: rgba(36, 36, 36, 1);">
 								￥{{data.total.outMoney.toFixed(2)}}</view>
 						</view>
 						<view class="dayOut flex">
-							<view
-								style="font-weight: 400;font-size: 24rpx;color: rgba(36, 36, 36, 0.2);margin-right: 12rpx;">
+							<view style="font-weight: 400;font-size: 24rpx;color:#242424;margin-right: 12rpx;">
 								平均每日</view>
 							<view style="font-weight: 600;font-size: 28rpx;color: rgba(36, 36, 36, 1);">
 								￥{{data.total.average}}</view>
@@ -80,36 +78,17 @@
 
 			<view class="selectItems">
 				<template v-if="!data.showDuringDate">
-					<view :class="[data.type===0?'selectItemActive':'selectItemActive selectItemUnactive']"
-						@click="selectFilter(0)">
+					<view :class="[data.type===0?'selectItemActive':'selectItemUnactive']" @click="selectFilter(0)">
 						今日
 					</view>
-					<view :class="[data.type===1?'selectItemActive':'selectItemActive selectItemUnactive']"
-						@click="selectFilter(1)">
+					<view :class="[data.type===1?'selectItemActive':'selectItemUnactive']" @click="selectFilter(1)">
 						本周
 					</view>
-					<view :class="[data.type===2?'selectItemActive':'selectItemActive selectItemUnactive']"
-						@click="selectFilter(2)">
+					<view :class="[data.type===2?'selectItemActive':'selectItemUnactive']" @click="selectFilter(2)">
 						全部
 					</view>
 				</template>
-				<template v-else>
-					<view class="c04 fs12" style="padding: 7px 16px;">
-						<picker mode="date" :value="data.startDate.slice(0,10)" @change="bindDateStart">
-							<view class="uni-input">{{data.startDate.slice(0,10)}}</view>
-						</picker>
-					</view>
-					<view class="c04 fs12" style="padding: 7px 16px;">
-						<picker mode="date" :value="data.endDate.slice(0,10)" @change="bindDateEnd">
-							<view class="uni-input">{{data.endDate.slice(0,10)}}</view>
-						</picker>
-					</view>
-				</template>
-				<view :class="[data.type===3?'selectItemActive':'selectItemActive selectItemUnactive']"
-					@click="selectFilter(3)" style="right: 24rpx;">
-					<image style="height: 40rpx;width: 40rpx;margin-top: 8rpx;" src="@/static/calendar.svg"
-						mode="aspectFill"></image>
-				</view>
+
 			</view>
 		</view>
 
@@ -118,7 +97,7 @@
 			<view class="waterDay" v-for="(item,index) in data.list" :key="index">
 				<view class="waterDayTop">
 					<view style="display: flex;align-items:center;">
-						<view style="font-weight: 600;font-size: 36rpx;color: #008C38;margin-right: 14rpx;">
+						<view style="font-weight: 600;font-size: 36rpx;color: #242424;margin-right: 14rpx;">
 							{{item.date.slice(5,10)}}
 						</view>
 						<view class="c04 fs12">
@@ -128,7 +107,7 @@
 					<!-- 复选框 -->
 					<view class="flex">
 						<!-- 支出 -->
-						<view class="filterItem flex" @click="selectWaterType(item,'out')">
+						<!-- <view class="filterItem flex" @click="selectWaterType(item,'out')">
 							<view class="empty">
 								<view class="able" v-if="item.outShow">
 								</view>
@@ -136,9 +115,9 @@
 							<view style="font-weight: 400;font-size: 30rpx;margin-right: 48rpx;" class="c">
 								-{{item.outMoney.toFixed(2)}}
 							</view>
-						</view>
+						</view> -->
 						<!-- 收入 -->
-						<view class="filterItem flex" @click="selectWaterType(item,'in')">
+						<!-- <view class="filterItem flex" @click="selectWaterType(item,'in')">
 							<view class="empty">
 								<view class="able" v-if="item.inShow">
 								</view>
@@ -146,7 +125,7 @@
 							<view style="font-weight: 400;font-size: 30rpx;" class="c">
 								+{{item.inMoney.toFixed(2)}}
 							</view>
-						</view>
+						</view> -->
 					</view>
 				</view>
 				<view class="waterItem" v-for="(water,index2) in item.water" :key="index2"
@@ -166,12 +145,41 @@
 						-{{water.money}}
 					</view>
 				</view>
+
+				<view style="height: 20rpx; border-bottom: 2rpx #cfcfcf dashed;width: 100%;margin-bottom: 26rpx;">
+				</view>
+
+				<view class="flex j_c_b">
+					<view class="flex j_c_b waterBottom">
+						<view class="filterItem flex" @click="selectWaterType(item,'in')">
+							<view :class="[item.inShow?'able':'empty']">
+
+							</view>
+							收入
+						</view>
+						<view style="font-weight: 700;font-size: 30rpx;" class="c">
+							{{item.inMoney.toFixed(1)}}
+						</view>
+					</view>
+					<view class="flex j_c_b waterBottom">
+						<view class="filterItem flex" @click="selectWaterType(item,'out')">
+							<view class="empty" :class="[item.outShow?'able':'empty']">
+
+							</view>
+							支出
+						</view>
+						<view style="font-weight: 700;font-size: 30rpx;" class="c">
+							{{item.outMoney.toFixed(1)}}
+						</view>
+					</view>
+				</view>
 			</view>
 		</view>
 
 		<!-- 记一笔 -->
 		<view class="createButton" @click="createPop">
-			记一笔
+
+			<image src="/static/createWater.svg" mode="aspectFit" style="height: 178rpx;width: 174rpx;"></image>
 		</view>
 		<uni-popup ref="popup">
 			<view class="popBox">
@@ -390,9 +398,12 @@
 		height: 72rpx;
 		background: #FAFAFA;
 		border-radius: 52rpx;
-		border: 1.2rpx solid;
-		border-image-source: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-			linear-gradient(0deg, #242424, #242424);
+		border: 1px solid;
+		background: linear-gradient(0deg, #FFFFFF, #FFFFFF),
+			linear-gradient(180deg, #C7FF02 0%, #13DDE2 100%);
+
+		border-image-source: linear-gradient(180deg, #C7FF02 0%, #13DDE2 100%);
+
 		margin-top: 12rpx;
 		font-weight: 600;
 		font-size: 36rpx;
@@ -443,44 +454,33 @@
 		align-items: center;
 		position: relative;
 		margin-right: 40rpx;
+		font-weight: 500;
+		background-color: #fafafa;
 	}
 
 	.selectItemActive {
-		gap: 20rpx;
-		background: #FBFBFB;
-		border-radius: 50rpx;
-		color: rgba(36, 36, 36, 1);
-		border: 2rpx solid rgba(36, 36, 36, 1);
-		font-weight: 500;
-		font-size: 26rpx;
-		width: 96rpx;
+		color: #242424;
+		background-color: #ddff80;
+		border: 1px solid rgba(36, 36, 36, 1);
+		border-radius: 16rpx;
+		padding: 0rpx 24rpx;
 		height: 60rpx;
 		line-height: 60rpx;
-		text-align: center;
-		margin-left: 24rpx;
-		/* margin-right: 24rpx; */
-
 	}
 
 	.selectItemUnactive {
-		/* gap: 20rpx;
-		background: #FBFBFB;
-		border-radius: 50rpx;
-		color: rgba(36, 36, 36, 0.4);
-		border: 2rpx solid rgba(36, 36, 36, 0.4);
-		font-weight: 500;
-		font-size: 26rpx;
-		width: 96rpx;
+		background-color: #fafafa;
+		color: #bababa;
+		border: 1px solid #fafafa;
+		border-radius: 16rpx;
+		padding: 0rpx 24rpx;
 		height: 60rpx;
 		line-height: 60rpx;
-		text-align: center;
-		margin-right: 24rpx; */
-		opacity: 0.4;
 	}
 
 	.createButton {
 		position: fixed;
-		width: 166rpx;
+		/* width: 166rpx;
 		height: 100rpx;
 		line-height: 100rpx;
 		text-align: center;
@@ -489,7 +489,7 @@
 		border-radius: 16rpx;
 		font-weight: 600;
 		font-size: 30rpx;
-		color: #FFFFFF;
+		color: #FFFFFF; */
 		bottom: 120rpx;
 		right: 32rpx;
 	}
@@ -517,24 +517,26 @@
 
 	.empty {
 		position: relative;
-		width: 28rpx;
-		height: 28rpx;
+		width: 8rpx;
+		height: 8rpx;
 		background: #FBFBFB;
-		border: 2rpx solid #13DDE2;
-		border-radius: 38rpx;
+		border: 2rpx solid #242424;
+		border-radius: 4rpx;
 
 		box-sizing: content-box;
 		margin-right: 8rpx;
 	}
 
 	.able {
-		position: absolute;
-		width: 16rpx;
-		height: 16rpx;
-		left: 7rpx;
-		top: 6rpx;
+		position: relative;
+		width: 8rpx;
+		height: 8rpx;
 		background: #13DDE2;
-		border-radius: 8rpx;
+		border: 2rpx solid #242424;
+		border-radius: 4rpx;
+
+		box-sizing: content-box;
+		margin-right: 8rpx;
 	}
 
 	.waterItem {
@@ -550,5 +552,14 @@
 		border-radius: 48rpx 48rpx 0rpx 0rpx;
 		background-color: #fff;
 		padding: 30rpx;
+	}
+
+	.waterBottom {
+		width: 285rpx;
+		height: 86rpx;
+		background-color: #fff;
+		padding: 24rpx;
+		border-radius: 16rpx;
+		font-weight: 700;
 	}
 </style>
