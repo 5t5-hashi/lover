@@ -106,26 +106,7 @@
 					</view>
 					<!-- 复选框 -->
 					<view class="flex">
-						<!-- 支出 -->
-						<!-- <view class="filterItem flex" @click="selectWaterType(item,'out')">
-							<view class="empty">
-								<view class="able" v-if="item.outShow">
-								</view>
-							</view>
-							<view style="font-weight: 400;font-size: 30rpx;margin-right: 48rpx;" class="c">
-								-{{item.outMoney.toFixed(2)}}
-							</view>
-						</view> -->
-						<!-- 收入 -->
-						<!-- <view class="filterItem flex" @click="selectWaterType(item,'in')">
-							<view class="empty">
-								<view class="able" v-if="item.inShow">
-								</view>
-							</view>
-							<view style="font-weight: 400;font-size: 30rpx;" class="c">
-								+{{item.inMoney.toFixed(2)}}
-							</view>
-						</view> -->
+
 					</view>
 				</view>
 				<view class="waterItem" v-for="(water,index2) in item.water" :key="index2"
@@ -548,10 +529,11 @@
 
 	.popBox {
 		width: 100%;
-		height: 1110rpx;
+		height: 100vh;
 		border-radius: 48rpx 48rpx 0rpx 0rpx;
-		background-color: #fff;
+		background-color: #fbfef7;
 		padding: 30rpx;
+		position: relative;
 	}
 
 	.waterBottom {

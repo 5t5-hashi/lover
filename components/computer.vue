@@ -9,100 +9,93 @@
 				收入
 			</view>
 		</view>
-		<!-- 金额名称行 -->
-		<view class="moneyNameBox">
-			<view class="money">
-				<view class="label">
-					金额
-				</view>
-				<view class="value">
-					<view class="flex">
-						<view class="">
-							￥
-						</view>
-						<view style="max-width: 140rpx;overflow-x: scroll;">
-							{{data.money}}
-						</view>
 
-					</view>
-
-				</view>
-			</view>
-			<view style="height: 2rpx;width: 20rpx;"></view>
-			<view class="name">
-				<view class="label">
-					名称
-				</view>
-				<view class="value">
-					<input type="text" :value="data.name" style="width: 70%;" @input="inputName" />
-				</view>
-			</view>
+		<view class="name">
+			<input type="text" :value="data.name" style="width: 70%;" @input="inputName" placeholder="名称" />
 		</view>
 		<!-- 标签列表 -->
-		<view style="width: 100%;height: 170rpx;">
-			<view class="labelList">
-				<view :class="[data.label===item._id? 'labelSelect flex':'labelUnselect flex']"
-					v-for="(item,index) in data.labelList" :key="index" @click="selectLabel(item._id)">
-					<image class="img" :src="item.icon" mode="aspectFill"></image>
-					<view>
-						{{item.name}}
+		<view class="labelList">
+			<view :class="[data.label===item._id? 'labelSelect':'labelUnselect']" v-for="(item,index) in data.labelList"
+				:key="index" @click="selectLabel(item._id)">
+				{{item.name}}
+			</view>
+		</view>
+		<view class="computerBox">
+			<view class="moneyBar">
+				<view style="text-align: center;width: 100%;font-size: 30px;font-weight: 600;">
+					<view v-if="data.money==''" style="width: 100%;">
+						￥0
+					</view>
+					<view v-else style="width: 100%;">
+						￥{{data.money}}
+					</view>
+				</view>
+				<img src="@/static/deleteMoney.svg" alt="">
+			</view>
+			<view class="computer">
+				<!-- 分四列 -->
+				<view class="col">
+					<view class="normal" @click="c('7')">
+						7
+					</view>
+					<view class="normal" @click="c('4')">
+						4
+					</view>
+					<view class="normal" @click="c('1')">
+						1
+					</view>
+					<view class="normal" @click="c('.')">
+
+					</view>
+				</view>
+				<view class="col">
+					<view class="normal" @click="c('8')">
+						8
+					</view>
+					<view class="normal" @click="c('5')">
+						5
+					</view>
+					<view class="normal" @click="c('2')">
+						2
+					</view>
+					<view class="normal" @click="c('0')">
+						0
+					</view>
+				</view>
+				<view class="col">
+					<view class="normal" @click="c('9')">
+						9
+					</view>
+					<view class="normal" @click="c('6')">
+						6
+					</view>
+					<view class="normal" @click="c('3')">
+						3
+					</view>
+					<view class="normal" @click="c('C')">
+						.
+					</view>
+				</view>
+				<view class="col">
+					<view class="normal" style="color: #13DDE2;" @click="c('-')">
+						C
+					</view>
+					<view class="normal" style="color: #13DDE2;" @click="c('+')">
+						+
+					</view>
+					<view class="normal" style="color: #13DDE2;" @click="c('+')">
+						-
+					</view>
+					<view class="normal" style="color: #13DDE2;" @click="finish">
+						=
 					</view>
 				</view>
 			</view>
-		</view>
-
-		<view class="computer">
-			<!-- 分四列 -->
-			<view class="col">
-				<view class="normal" @click="c('7')">
-					7
+			<view class="flex" style="font-size: 18px;justify-content: space-between;">
+				<view class="cancel">
+					取消
 				</view>
-				<view class="normal" @click="c('4')">
-					4
-				</view>
-				<view class="normal" @click="c('1')">
-					1
-				</view>
-				<view class="normal" @click="c('.')">
-					.
-				</view>
-			</view>
-			<view class="col">
-				<view class="normal" @click="c('8')">
-					8
-				</view>
-				<view class="normal" @click="c('5')">
-					5
-				</view>
-				<view class="normal" @click="c('2')">
-					2
-				</view>
-				<view class="normal" @click="c('0')">
-					0
-				</view>
-			</view>
-			<view class="col">
-				<view class="normal" @click="c('9')">
-					9
-				</view>
-				<view class="normal" @click="c('6')">
-					6
-				</view>
-				<view class="normal" @click="c('3')">
-					3
-				</view>
-				<view class="normal" style="background: #F8F8F8;" @click="c('C')">
-					C
-				</view>
-			</view>
-			<view class="col">
-				<view class="normal" style="background: #F2FFC5;" @click="c('-')">
-					-
-				</view>
-				<view class="normal" style="background: #F2FFC5;height: 216rpx;line-height: 216rpx;" @click="c('+')">
-					+
-				</view>
-				<view class="normal" style="background: #C7E94E;" @click="finish">
+				<view class="submit">
 					完成
 				</view>
 			</view>
@@ -303,6 +296,7 @@
 		margin-left: 40rpx;
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		margin-bottom: 38rpx;
 	}
 
@@ -329,24 +323,15 @@
 		opacity: 0.4;
 	}
 
-	.moneyNameBox {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.money {
-		width: 250rpx;
-		height: 170rpx;
-		background: #FAFAFA;
-		border-radius: 48rpx;
-	}
 
 	.name {
-		width: 460rpx;
-		height: 170rpx;
-		background: #FAFAFA;
-		border-radius: 48rpx;
+		width: 100%;
+		padding: 20px 16px;
+		flex-direction: column;
+		align-items: flex-start;
+		border-radius: 20px;
+		background: #F8FBF0;
+		margin-bottom: 12px;
 	}
 
 	.label {
@@ -365,33 +350,33 @@
 	}
 
 	.labelList {
-		margin-top: 24rpx;
 		display: flex;
+		padding: 14px 16px;
 		flex-wrap: wrap;
-		/* align-items: center; */
-		margin-bottom: 74rpx;
-		/* height: 150rpx; */
+		align-items: flex-start;
+		gap: 14px;
+		align-self: stretch;
+		border-radius: 20px;
+		background: #F8FBF0;
 	}
 
 	.labelSelect {
-		padding: 16rpx 20rpx;
-		background: #FAFAFA;
-		border: 2rpx solid #C7E94E;
-		border-radius: 36rpx;
-		font-weight: 500;
-		font-size: 28rpx;
-		margin-right: 32rpx;
+		padding: 18px 16px;
+		align-items: center;
+		border-radius: 32px;
+		border: 1px solid #242424;
+		background: #DDFF80;
+		font-weight: 600;
 	}
 
 	.labelUnselect {
-		padding: 16rpx 20rpx;
-		background: #FAFAFA;
-		border-radius: 36rpx;
-		border: 2rpx solid #FAFAFA;
-		font-weight: 500;
-		font-size: 28rpx;
-		opacity: 0.4;
-		margin-right: 32rpx;
+		padding: 18px 16px;
+		align-items: center;
+		border-radius: 32px;
+		border: 1px solid #B1B1B1;
+		font-weight: 600;
+		color: #B1B1B1;
+		border: 1px solid #B1B1B1;
 	}
 
 	.img {
@@ -414,12 +399,45 @@
 	.normal {
 		width: 100%;
 		height: 102rpx;
-		background: #F6F9EB;
+		background: #F9F9F9;
 		border-radius: 16rpx;
 		margin-bottom: 12rpx;
 		line-height: 102rpx;
 		text-align: center;
 		color: #4A3100;
 		font-weight: 600;
+	}
+
+	.computerBox {
+		background-color: #fff;
+		position: absolute;
+		bottom: 100px;
+	}
+
+	.moneyBar {
+		width: 100%;
+		padding: 16px;
+		text-align: center;
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.cancel {
+		height: 58px;
+		width: 100px;
+		line-height: 58px;
+		text-align: center;
+		border-radius: 16px;
+		border: 1px solid #242424;
+	}
+
+	.submit {
+		height: 58px;
+		width: 230px;
+		line-height: 58px;
+		text-align: center;
+		border-radius: 16px;
+		border: 1px solid #242424;
+		background-color: #DDFF80;
 	}
 </style>
