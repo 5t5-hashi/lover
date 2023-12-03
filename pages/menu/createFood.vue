@@ -5,12 +5,12 @@
 			style="margin-bottom: 86rpx;width: 40rpx;height: 28rpx;margin-top: 60rpx;" @click="back"></image>
 		<!-- 添加图片 -->
 		<view style="margin-bottom: 40rpx">
-			<image v-if="data.data.url===''" src="@/static/addFood.svg" mode="aspectFill"
-				style="height: 230rpx;width: 160rpx;" @click="select">
+			<image v-if="data.data.url===''" @click="select" src="@/static/addImage.svg" mode="scaleToFill"
+				style="width: 100%;height: 132px;">
+			</image>
+			<image v-else @click="select" :src="data.data.url" mode="aspectFill" style="width: 100%;height: 132px;">
 			</image>
 
-			<image v-else :src="data.data.url" mode="aspectFill" style="height: 160rpx;width: 220rpx;" @click="select">
-			</image>
 
 		</view>
 
@@ -31,14 +31,14 @@
 			</view>
 		</view>
 
+		<!-- 食材 -->
 		<view class="fs16 c24 fw6" style="position: relative;margin-left: 12rpx;">
-			用料
+			主要原料
 			<image style="height: 11rpx;width: 60rpx;position: absolute;left: -12rpx;bottom: -6rpx;"
 				src="@/static/detailsBlue.svg" mode="aspectFill"></image>
 		</view>
 
 		<view class="materialList">
-
 			<view class="c24 fs16" v-for="(item,index) in data.data.materialList" :key="index"
 				style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 20rpx;">
 				<view class="fw5 materialName">
@@ -59,6 +59,37 @@
 			<message v-if="data.showMessage" :title="data.title" />
 		</view>
 
+
+		<!-- 辅料 -->
+		<view class="fs16 c24 fw6" style="position: relative;margin-left: 12rpx;">
+			主要辅料
+			<image style="height: 11rpx;width: 60rpx;position: absolute;left: -12rpx;bottom: -6rpx;"
+				src="@/static/detailsBlue.svg" mode="aspectFill"></image>
+		</view>
+
+		<view class="ingredientsList">
+			<view class="c24 fs16" v-for="(item,index) in data.data.ingredientsList" :key="index"
+				style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 20rpx;">
+				<view class="fw5 materialName">
+					<input type="text" v-model="item.name" placeholder="辅料名称" placeholder-class="placeholder">
+				</view>
+				<view class="fw4 materialDosage">
+					<input type="text" v-model="item.dosage" style="text-align: right;" placeholder="用量"
+						placeholder-class="placeholder">
+				</view>
+			</view>
+
+			<view class="addIconBox" @click="addIngredients">
+				<view class="addIcon">
+					+
+				</view>
+			</view>
+
+			<message v-if="data.showMessage" :title="data.title" />
+		</view>
+
+
+		<!-- 做法步骤 -->
 		<view class="stepBox">
 			<view class="fs16 c24 fw6" style="position: relative;margin-left: 12rpx;">
 				做法
@@ -119,6 +150,16 @@
 					dosage: "",
 				},
 			],
+			ingredientsList: [
+				{
+					name: "",
+					dosage: "",
+				},
+				{
+					name: "",
+					dosage: "",
+				},
+			],
 			step: [
 				"",
 				"",
@@ -144,6 +185,11 @@
 		data.data.materialList.push({ name: "", dosage: "" })
 	}
 
+	// 新增辅料列表项
+	function addIngredients() : void {
+		data.data.ingredientsList.push({ name: "", dosage: "" })
+	}
+
 	// 返回键
 	function back() : void {
 		uni.navigateBack()
@@ -153,6 +199,7 @@
 	async function submit() : Promise<any> {
 
 		let list : any[] = []
+		let list2 : any[] = []
 		if (data.data.name === '') {
 			data.title = "菜谱名呢？"
 			data.showMessage = true
@@ -184,6 +231,26 @@
 			}
 		}
 
+
+		try {
+			data.data.ingredientsList.forEach(e => {
+				if ((e.name === '' && e.dosage != '') || (e.dosage === '' && e.name != '')) {
+					data.title = `"${e.name}${e.dosage}"这一栏还缺少东西哟！`
+					data.showMessage = true
+					throw new Error('1')
+				} else if (e.name === '' && e.dosage === '') {
+				} else {
+					list2.push(e)
+				}
+			})
+			data.data.ingredientsList = list2
+		} catch (e) {
+			// 退出整个函数
+			if (e.message === '1') {
+				return
+			}
+		}
+
 		let changeStep : string[] = []
 		// 把步骤内容更新放入数组中
 		for (let i = 0; i < data.data.step.length; i++) {
@@ -206,13 +273,14 @@
 				url: file.fileID,
 				type: data.data.type,
 				materialList: data.data.materialList,
+				ingredientsList: data.data.ingredientsList,
 				step: changeStep,
 				created_time: new Date().valueOf(),
 				creater: res.data
 			}).then(() => {
 				data.title = "已创建！"
 				data.showMessage = true
-				uni.navigateBack(1)
+				uni.navigateBack()
 			})
 		})
 

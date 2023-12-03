@@ -4,7 +4,7 @@
 exports.main = async (event, context) => {
 	const db = uniCloud.database();
 	const dbCmd = db.command;
-	const plan = db.collection('menu_plan');
+	const plan_date = db.collection('menu_plan_date');
 
 	let mydate = new Date()
 	mydate = new Date(mydate.getTime() + mydate.getTimezoneOffset() * 60 * 1000 + 8 * 60 *
@@ -23,10 +23,11 @@ exports.main = async (event, context) => {
 	s = s < 10 ? "0" + s : s
 	let newDate = `${y}-${m}-${d}`
 
-	await plan.add({
+	await plan_date.add({
 		date: newDate,
+		breakfast: [],
 		lunch: [],
 		dinner: []
-	}, )
+	})
 	//返回数据给客户端
 };

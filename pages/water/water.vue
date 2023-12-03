@@ -7,6 +7,9 @@
 				</view>
 				<image style="height: 56.84rpx;width: 58.1rpx;margin-left: 10.6rpx;" src="@/static/money.svg"
 					mode="aspectFill"></image>
+				<view class="table" @click="jumpTable">
+					每月报表
+				</view>
 			</view>
 
 			<view class="flex">
@@ -116,7 +119,7 @@
 							{{water.name}}
 						</view>
 						<view class="fw4 c04 fs12" style="margin-top: 8rpx;">
-							{{water.create_time.slice(6,16)}}
+							{{water.create_time.slice(5,16)}}
 						</view>
 					</view>
 					<view class="fs18 fw6" v-if="water.type.type===2&&item.inShow">
@@ -131,8 +134,8 @@
 				</view>
 
 				<view class="flex j_c_b">
-					<view class="flex j_c_b waterBottom">
-						<view class="filterItem flex" @click="selectWaterType(item,'in')">
+					<view class="flex j_c_b waterBottom" @click="selectWaterType(item,'in')">
+						<view class="filterItem flex">
 							<view :class="[item.inShow?'able':'empty']">
 
 							</view>
@@ -142,8 +145,8 @@
 							{{item.inMoney.toFixed(1)}}
 						</view>
 					</view>
-					<view class="flex j_c_b waterBottom">
-						<view class="filterItem flex" @click="selectWaterType(item,'out')">
+					<view class="flex j_c_b waterBottom" @click="selectWaterType(item,'out')">
+						<view class="filterItem flex">
 							<view class="empty" :class="[item.outShow?'able':'empty']">
 
 							</view>
@@ -240,7 +243,12 @@
 
 	}
 
-
+	// 跳转统计表页面
+	function jumpTable() {
+		uni.navigateTo({
+			url: "/pages/water/table"
+		})
+	}
 
 	// 选择查看流水类型
 	function selectWaterType(e : any, type : string) : void {
@@ -379,7 +387,7 @@
 		height: 72rpx;
 		background: #FAFAFA;
 		border-radius: 52rpx;
-		border: 1px solid;
+		border: 2rpx solid;
 		background: linear-gradient(0deg, #FFFFFF, #FFFFFF),
 			linear-gradient(180deg, #C7FF02 0%, #13DDE2 100%);
 
@@ -442,7 +450,7 @@
 	.selectItemActive {
 		color: #242424;
 		background-color: #ddff80;
-		border: 1px solid rgba(36, 36, 36, 1);
+		border: 2rpx solid rgba(36, 36, 36, 1);
 		border-radius: 16rpx;
 		padding: 0rpx 24rpx;
 		height: 60rpx;
@@ -452,7 +460,7 @@
 	.selectItemUnactive {
 		background-color: #fafafa;
 		color: #bababa;
-		border: 1px solid #fafafa;
+		border: 2rpx solid #fafafa;
 		border-radius: 16rpx;
 		padding: 0rpx 24rpx;
 		height: 60rpx;
@@ -543,5 +551,14 @@
 		padding: 24rpx;
 		border-radius: 16rpx;
 		font-weight: 700;
+	}
+
+	.table {
+		padding: 8px 12px;
+		border-radius: 8px;
+		border: 1px solid #C7FF02;
+		background: #FBFFED;
+		margin-left: 16px;
+		color: #242424;
 	}
 </style>

@@ -10,19 +10,21 @@
 			</view>
 		</view>
 
-		<view class="name">
-			<input type="text" :value="data.name" style="width: 70%;" @input="inputName" placeholder="名称" />
-		</view>
+
 		<!-- 标签列表 -->
 		<view class="labelList">
 			<view :class="[data.label===item._id? 'labelSelect':'labelUnselect']" v-for="(item,index) in data.labelList"
-				:key="index" @click="selectLabel(item._id)">
+				:key="index" @click="selectLabel(item)">
 				{{item.name}}
 			</view>
 		</view>
+
+		<view class="name">
+			<input type="text" :value="data.name" style="width: 70%;" @input="inputName" placeholder="名称" />
+		</view>
 		<view class="computerBox">
 			<view class="moneyBar">
-				<view style="text-align: center;width: 100%;font-size: 30px;font-weight: 600;">
+				<view style="text-align: center;width: 100%;font-size: 60rpx;font-weight: 600;">
 					<view v-if="data.money==''" style="width: 100%;">
 						￥0
 					</view>
@@ -30,7 +32,7 @@
 						￥{{data.money}}
 					</view>
 				</view>
-				<img src="@/static/deleteMoney.svg" alt="">
+				<img @click="c('back')" src="@/static/deleteMoney.svg" alt="">
 			</view>
 			<view class="computer">
 				<!-- 分四列 -->
@@ -44,7 +46,7 @@
 					<view class="normal" @click="c('1')">
 						1
 					</view>
-					<view class="normal" @click="c('.')">
+					<view class="normal">
 
 					</view>
 				</view>
@@ -72,30 +74,30 @@
 					<view class="normal" @click="c('3')">
 						3
 					</view>
-					<view class="normal" @click="c('C')">
+					<view class="normal" @click="c('.')">
 						.
 					</view>
 				</view>
 				<view class="col">
-					<view class="normal" style="color: #13DDE2;" @click="c('-')">
+					<view class="normal" style="color: #13DDE2;" @click="c('reset')">
 						C
 					</view>
 					<view class="normal" style="color: #13DDE2;" @click="c('+')">
 						+
 					</view>
-					<view class="normal" style="color: #13DDE2;" @click="c('+')">
+					<view class="normal" style="color: #13DDE2;" @click="c('-')">
 						-
 					</view>
-					<view class="normal" style="color: #13DDE2;" @click="finish">
+					<view class="normal" style="color: #13DDE2;" @click="c('=')">
 						=
 					</view>
 				</view>
 			</view>
-			<view class="flex" style="font-size: 18px;justify-content: space-between;">
-				<view class="cancel">
+			<view class="flex" style="font-size: 36rpx;justify-content: space-between;">
+				<view class="cancel" @click="cancel">
 					取消
 				</view>
-				<view class="submit">
+				<view class="submit" @click="finish">
 					完成
 				</view>
 			</view>
@@ -113,10 +115,6 @@
 		labelList: [
 		],
 		label: 1,
-		record: "",
-		logic: "",
-		value1: "",
-		value2: "",
 		key: "",
 		waterFun: null
 	})
@@ -125,8 +123,9 @@
 
 
 	// 选择标签
-	function selectLabel(e : number) : void {
-		data.label = e
+	function selectLabel(e : any) : void {
+		data.label = e._id
+		data.name = e.name
 	}
 
 	// 选择类型
@@ -140,94 +139,17 @@
 	}
 
 	function c(e : string) : void {
-		vibrateShort();
 
-		if (e === 'C') {
-			data.logic = ""
-			data.value1 = ""
-			data.value2 = ""
-			data.money = ""
-			data.key = ""
-			data.record = ""
-		} else if (e === '+') {
-			// 如果重复点击两次则不执行
-			if (data.key === e || data.key === "") {
-				return
-			}
-			// 如果第一次输入值（还未输入任何运算符的时候）
-			if (data.value1 == "") {
-				data.value1 = data.value2
-			} else {
-				// 已经输入过运算符的时候
-				if (data.logic === "+") {
-					data.value1 = (parseFloat(data.value1) + parseFloat(data.value2)).toString()
-				} else if (data.logic === "-") {
-					data.value1 = (parseFloat(data.value1) - parseFloat(data.value2)).toString()
-				}
-			}
-			data.value2 = ""
-			console.log(`value1:${data.value1}`);
-			data.logic = "+"
-			data.record += "+"
-
-		} else if (e === "-") {
-			// 如果重复点击两次则不执行
-			if (data.key === e || data.key === "") {
-				return
-			}
-			// 如果第一次输入值（还未输入任何运算符的时候）
-			if (data.value1 == "") {
-				data.value1 = data.value2
-			} else {
-				// 已经输入过运算符的时候
-				if (data.logic === "+") {
-					data.value1 = (parseFloat(data.value1) + parseFloat(data.value2)).toString()
-				} else if (data.logic === "-") {
-					data.value1 = (parseFloat(data.value1) - parseFloat(data.value2)).toString()
-				}
-			}
-			data.value2 = ""
-			console.log(`value1:${data.value1}`);
-			data.logic = "-"
-			data.record += "-"
+		if (e === 'reset') {
+			data.money = ''
+		} else if (e === 'back') {
+			data.money = data.money.toString()
+			data.money = data.money.slice(0, data.money.length - 1)
+		} else if (e === '=') {
+			data.money = eval(data.money)
 		} else {
-			// 如果输入的数字,更新value2
-
-			if (e == ".") {
-				console.log(data.value2.indexOf("."));
-				// 判断输入.时,已经有.的话就不叠加,没有的话就加
-				if (data.value2.indexOf(".") == -1) {
-					data.value2 += e
-					data.record += e
-				} else {
-
-				}
-			} else {
-				data.value2 += e
-				data.record += e
-			}
-
-			if (data.logic === '+') {
-				data.money = (parseFloat(data.value1) + parseFloat(data.value2)).toFixed(2).toString()
-				// console.log(data.record);
-				// data.record += e
-				// console.log(`总和${parseFloat(data.value1) + parseFloat(data.value2)}`);
-				// console.log(`value1=${parseFloat(data.value1)},value2=${parseFloat(data.value2)}`);
-			} else if (data.logic === '-') {
-				// data.record += e
-				data.money = (parseFloat(data.value1) - parseFloat(data.value2)).toFixed(2).toString()
-				// console.log(`总和${parseFloat(data.value1) - parseFloat(data.value2)}`);
-				// console.log(`value1=${parseFloat(data.value1)},value2=${parseFloat(data.value2)}`);
-			} else if (data.logic === '') {
-
-				data.money = data.value2
-				// console.log(`value1=${data.value1},value2=${data.value2}`);
-				// console.log(`value1=${parseFloat(data.value1)},value2=${parseFloat(data.value2)}`);
-			}
-
+			data.money += e
 		}
-		// 记录这次点击的按键
-		data.key = e
 	}
 
 	// 获取支出类型
@@ -236,9 +158,7 @@
 			key: 'outType'
 		}).then(res => {
 			data.labelList = res.data
-			data.labelList.forEach(e => {
-				e.icon = "https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/2e05bd6e-2cf6-43a6-a076-1fe3e8ff202f.svg"
-			})
+			data.name = data.labelList[0].name
 			data.label = data.labelList[0]._id
 		})
 	}
@@ -249,16 +169,16 @@
 			key: 'inType'
 		}).then(res => {
 			data.labelList = res.data
-			data.labelList.forEach(e => {
-				e.icon = "https://mp-cae3c1d7-74fb-4f52-84ba-3c33657821e3.cdn.bspapp.com/cloudstorage/2e05bd6e-2cf6-43a6-a076-1fe3e8ff202f.svg"
-			})
+			data.name = data.labelList[0].name
 			data.label = data.labelList[0]._id
 		})
 	}
 
 	// 点击完成
 	function finish() : void {
-
+		if (data.money === '') {
+			return
+		}
 		uni.getStorage({
 			key: 'role'
 		}).then(res => {
@@ -271,13 +191,12 @@
 					emit('finish')
 				})
 			}
-			data.logic = ""
-			data.value1 = ""
-			data.value2 = ""
 			data.money = ""
-			data.key = ""
-			data.record = ""
 		})
+	}
+
+	function cancel() : void {
+		emit('finish')
 	}
 
 	// 输入名字
@@ -326,12 +245,12 @@
 
 	.name {
 		width: 100%;
-		padding: 20px 16px;
+		padding: 40rpx 32rpx;
 		flex-direction: column;
 		align-items: flex-start;
-		border-radius: 20px;
+		border-radius: 40rpx;
 		background: #F8FBF0;
-		margin-bottom: 12px;
+		margin-bottom: 24rpx;
 	}
 
 	.label {
@@ -351,32 +270,33 @@
 
 	.labelList {
 		display: flex;
-		padding: 14px 16px;
+		padding: 28rpx 32rpx;
 		flex-wrap: wrap;
 		align-items: flex-start;
-		gap: 14px;
+		gap: 28rpx;
 		align-self: stretch;
-		border-radius: 20px;
+		border-radius: 40rpx;
 		background: #F8FBF0;
+		margin-bottom: 36rpx;
 	}
 
 	.labelSelect {
-		padding: 18px 16px;
+		padding: 36rpx 32rpx;
 		align-items: center;
-		border-radius: 32px;
-		border: 1px solid #242424;
+		border-radius: 64rpx;
+		border: 2rpx solid #242424;
 		background: #DDFF80;
 		font-weight: 600;
 	}
 
 	.labelUnselect {
-		padding: 18px 16px;
+		padding: 36rpx 32rpx;
 		align-items: center;
-		border-radius: 32px;
-		border: 1px solid #B1B1B1;
+		border-radius: 64rpx;
+		border: 2rpx solid #B1B1B1;
 		font-weight: 600;
 		color: #B1B1B1;
-		border: 1px solid #B1B1B1;
+		border: 2rpx solid #B1B1B1;
 	}
 
 	.img {
@@ -411,33 +331,36 @@
 	.computerBox {
 		background-color: #fff;
 		position: absolute;
-		bottom: 100px;
+		bottom: 200rpx;
+		left: 0;
+		right: 0;
+		padding: 0 32rpx;
 	}
 
 	.moneyBar {
 		width: 100%;
-		padding: 16px;
+		padding: 32rpx;
 		text-align: center;
 		display: flex;
 		justify-content: space-between;
 	}
 
 	.cancel {
-		height: 58px;
-		width: 100px;
-		line-height: 58px;
+		height: 116rpx;
+		width: 200rpx;
+		line-height: 116rpx;
 		text-align: center;
-		border-radius: 16px;
-		border: 1px solid #242424;
+		border-radius: 32rpx;
+		border: 2rpx solid #242424;
 	}
 
 	.submit {
-		height: 58px;
-		width: 230px;
-		line-height: 58px;
+		height: 116rpx;
+		width: 460rpx;
+		line-height: 116rpx;
 		text-align: center;
-		border-radius: 16px;
-		border: 1px solid #242424;
+		border-radius: 32rpx;
+		border: 2rpx solid #242424;
 		background-color: #DDFF80;
 	}
 </style>

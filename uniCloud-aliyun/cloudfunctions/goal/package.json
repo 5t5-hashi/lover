@@ -1,0 +1,7 @@
+{
+  "name": "goal",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

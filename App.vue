@@ -35,6 +35,12 @@
 		src: url("@/static/MiSans-Regular.ttf");
 	}
 
+	@font-face {
+		font-family: "XM";
+		src: url("@/static/xiaomai.ttf");
+	}
+
+
 	html,
 	body {
 		font-family: "M";
@@ -74,8 +80,20 @@
 		color: #242424;
 	}
 
+	.fs10 {
+		font-size: 20rpx;
+	}
+
+	.fs11 {
+		font-size: 22rpx;
+	}
+
 	.fs12 {
 		font-size: 24rpx;
+	}
+
+	.fs13 {
+		font-size: 26rpx;
 	}
 
 	.fs14 {
@@ -119,5 +137,12 @@
 		width: 100%;
 		padding: 62rpx 0rpx 0rpx 0rpx;
 		position: relative;
+	}
+
+	.ellipsis {
+		text-overflow: ellipsis;
+		overflow: hidden;
+		word-break: break-all;
+		white-space: nowrap;
 	}
 </style>

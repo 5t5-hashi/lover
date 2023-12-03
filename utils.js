@@ -40,10 +40,40 @@ const textareaToHtml = (str) => {
 	return str;
 }
 
+// 选择图片
+const chooseImg = () => {
+	return new Promise((resolve) => {
+		uni.chooseImage({
+			count: 1, //默认100
+			extension: ['.png', '.jpg'],
+			success: function(res) {
+				console.log(res);
+				resolve(res.tempFilePaths[0])
+			}
+		});
+	})
+}
+
+// 压缩图片
+const compressImage = (e) => {
+	return new Promise((resolve) => {
+		uni.compressImage({
+			src: e,
+			quality: 60,
+			success: res => {
+				resolve(res.tempFilePath)
+			}
+		})
+	})
+
+}
+
 
 
 export {
 	vibrateShort,
 	getDate,
-	textareaToHtml
+	textareaToHtml,
+	chooseImg,
+	compressImage
 }

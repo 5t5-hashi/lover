@@ -11,9 +11,9 @@
 					饮食计划
 				</view>
 			</view>
-			<view class="inputBox" v-if="data.type===1">
-				<input type="text" @input="inputWrod" v-model="data.keyWrod">
-				<image src="@/static/search.svg" mode="aspectFill" id="searchIcon">
+			<view class="inputBox fs12" v-if="data.type===1">
+				<input type="text" @input="inputWrod" v-model="data.keyWrod" placeholder="输入食材或菜名">
+				<image src="@/static/iconSearch.svg" mode="aspectFill" id="searchIcon">
 				</image>
 			</view>
 			<view v-if="data.type===2" class="inputBox" style="background-color: #fff;">
@@ -31,20 +31,19 @@
 				</view>
 			</view>
 
-			<scroll-view scroll-y="true" class="scrollList" style="height: calc(100vh - 320rpx);"
+			<scroll-view scroll-y="true" class="scrollList" style="height: calc(100vh - 420rpx);"
 				@scrolltolower="loadMore" @refresherrefresh="refresherrefresh" refresher-enabled>
 				<view class="item" v-for="(item,index) in data.data" :key="index" @click="jumpDetail(item)">
-					<image :src="item.url" mode="aspectFill" style="height: 212rpx;width: 212rpx;border-radius: 16rpx;"
-						lazy-load></image>
-					<view class="itemName">
-						<image src="@/static/star.svg" mode="aspectFill" style="height: 28rpx;width: 28rpx;"></image>
-						<view class="">
+					<view class="flex">
+						<image :src="item.url" mode="aspectFill"
+							style="width: 80rpx;height: 80rpx;border-radius: 16rpx;" lazy-load></image>
+						<view class="itemName">
 							{{item.name}}
 						</view>
 					</view>
+					<image src="@/static/iconRight.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;"></image>
 				</view>
-				<view class="item" style="height: 212rpx;" v-if="data.data.length%3===2">
-				</view>
+
 			</scroll-view>
 			<view style="position: fixed;bottom: 172rpx;right: 40rpx;">
 				<image src="@/static/createMenu.svg" mode="aspectFill" style="width: 166rpx;height: 172rpx;"
@@ -56,71 +55,111 @@
 		<!-- 饮食计划 -->
 		<template v-else>
 			<view class="dayType">
-				<view v-for="(item,index) in data.dayList" :key="index"
-					:class="[data.day===index?'selectDayType':'unselectDayType']" @click="choseDayType(index)">
-					<text v-if="index===0">今天</text>
-					<text v-if="index===1">明天</text>
-					<text v-if="index===2">后天</text>
+				<view :class="[data.dayIndex===0?'selectDayType':'unselectDayType']" @click="choseDayType(0)">
+					<text>今天</text>
+				</view>
+				<view :class="[data.dayIndex===1?'selectDayType':'unselectDayType']" @click="choseDayType(1)">
+					<text>明天</text>
+				</view>
+				<view :class="[data.dayIndex===2?'selectDayType':'unselectDayType']" @click="choseDayType(2)">
+					<text>后天</text>
 				</view>
 			</view>
 
-			<!-- 午餐晚餐 -->
-			<view class="planBox" v-if="data.item">
-				<view class="plan">
-					<image src="@/static/wucan.svg" mode="aspectFill" style="height: 28px;width: 58px;"></image>
+
+			<!-- 早饭 -->
+			<view class="foodList" v-if="data.item.breakfast.length!=0">
+				<view class="flex">
+					<image src="@/static/breakfast.svg" mode="aspectFill"
+						style="width: 34rpx;height: 32rpx;margin-right: 12rpx;"></image>
+					<view class="fs13 fw7">
+						早餐
+					</view>
+				</view>
+				<view class="planFood" v-for="(item,index) in data.item.breakfast" :key="index">
 					<view class="flex">
-						<template v-for="(item,index) in data.lunchList" :key="index">
-							{{item.name}} <text v-if="index<data.lunchList.length-1">/</text>
-
-						</template>
-
-						<image src="@/static/greenEdit.svg" mode="aspectFill"
-							style="margin-left: 20px;width: 24px;height: 24px;" @click="jumpEdit('lunch')"></image>
-					</view>
-				</view>
-				<view class="plan" style="margin-top: 24px;">
-					<image src="@/static/wancan.svg" mode="aspectFill" style="height: 28px;width: 58px;"></image>
-					<view class="flex">
-						<template v-for="(item,index) in data.dinnerList" :key="index">
-							{{item.name}}<text v-if="index<data.dinnerList.length-1">/</text>
-						</template>
-
-						<image src="@/static/greenEdit.svg" mode="aspectFill"
-							style="margin-left: 20px;width: 24px;height: 24px;" @click="jumpEdit('dinner')"></image>
-					</view>
-				</view>
-			</view>
-
-			<!-- 食物清单 -->
-			<view class="planBox">
-				<view class="planTop">
-					<image src="@/static/shoppingBag.svg" mode="aspectFill" style="height: 24px;width: 24px;"></image>
-					<view style="margin-left: 6px;">
-						食材清单
-					</view>
-				</view>
-
-				<view class="foodList" v-if="data.item">
-					<view :class="[it.name===data.foodName?'selectFood':'unselectFood']" style="margin-right: 16px;"
-						v-for="(it,index) in data.allFood" :key="index" @click="choseFood(it)">
-						{{it.name}}
-					</view>
-				</view>
-
-				<view class="materialList">
-					<view class="material" v-for="(item,index) in data.materialList" :key="index"
-						@click="selectMaterial(item)">
-						<view
-							style="width: 18px;height: 18px;opacity: 0.2;border: 1px solid #242424;border-radius: 2px;margin-right: 10px;"
-							:class="[item.has?'boxSelect':'']">
-						</view>
-						<view class="">
+						<image :src="item.url" mode="aspectFill"
+							style="width: 80rpx;height: 80rpx;border-radius: 16rpx;">
+						</image>
+						<view class="itemName">
 							{{item.name}}
 						</view>
+					</view>
+					<image @click="deletePlanFood(0,index)" src="@/static/deletePlanFood.svg" mode="aspectFill"
+						style="height: 40rpx;width: 40rpx;">
+					</image>
+				</view>
+			</view>
 
+			<!-- 午饭 -->
+			<view class="foodList" v-if="data.item.dinner.length!=0">
+				<view class="flex">
+					<image src="@/static/dinner.svg" mode="aspectFill"
+						style="width: 34rpx;height: 32rpx;margin-right: 12rpx;"></image>
+					<view class="fs13 fw7">
+						午餐
+					</view>
+				</view>
+				<view class="planFood" v-for="(item,index) in data.item.dinner" :key="index">
+					<view class="flex">
+						<image :src="item.url" mode="aspectFill"
+							style="width: 80rpx;height: 80rpx;border-radius: 16rpx;">
+						</image>
+						<view class="itemName">
+							{{item.name}}
+						</view>
+					</view>
+					<image @click="deletePlanFood(1,index)" src="@/static/deletePlanFood.svg" mode="aspectFill"
+						style="height: 40rpx;width: 40rpx;">
+					</image>
+				</view>
+			</view>
+
+			<!-- 晚饭 -->
+			<view class="foodList" v-if="data.item.lunch.length!=0">
+				<view class="flex">
+					<image src="@/static/lunch.svg" mode="aspectFill"
+						style="width: 34rpx;height: 32rpx;margin-right: 12rpx;"></image>
+					<view class="fs13 fw7">
+						晚餐
+					</view>
+				</view>
+				<view class="planFood" v-for="(item,index) in data.item.lunch" :key="index">
+					<view class="flex">
+						<image :src="item.url" mode="aspectFill"
+							style="width: 80rpx;height: 80rpx;border-radius: 16rpx;">
+						</image>
+						<view class="itemName">
+							{{item.name}}
+						</view>
+					</view>
+					<image @click="deletePlanFood(2,index)" src="@/static/deletePlanFood.svg" mode="aspectFill"
+						style="height: 40rpx;width: 40rpx;">
+					</image>
+				</view>
+			</view>
+
+			<view class="createPlanButton">
+				<view class="createPlanButtonItem" @click="toCreatePlan(0)">
+					<image src="@/static/breakfast.svg" mode="aspectFill" class="createPlanIcon"></image>
+					<view>
+						+早餐
+					</view>
+				</view>
+				<view class="createPlanButtonItem" @click="toCreatePlan(1)">
+					<image src="@/static/dinner.svg" mode="aspectFill" class="createPlanIcon"></image>
+					<view>
+						+午餐
+					</view>
+				</view>
+				<view class="createPlanButtonItem" @click="toCreatePlan(2)">
+					<image src="@/static/lunch.svg" mode="aspectFill" class="createPlanIcon"></image>
+					<view>
+						+晚餐
 					</view>
 				</view>
 			</view>
+
 		</template>
 
 	</view>
@@ -149,8 +188,9 @@
 		pageSize: 21,
 		type: 1,
 		menuType: "1",
-		day: 0,
+		dayIndex: 0,
 		dayList: [
+			0, 1, 2
 		],
 		item: null,
 		foodName: "",
@@ -197,30 +237,42 @@
 
 
 	function init2() : void {
-		data.menuFun.getPlan().then(res => {
-			data.dayList = res.data
-			data.item = data.dayList[data.day]
-			data.lunchList = data.item.lunch
-			data.dinnerList = data.item.dinner
-			data.allFood = []
-			data.allFood = [...data.lunchList, ...data.dinnerList]
-
-			console.log(data.lunchList, data.dinnerList);
-			if (data.allFood.length != 0) {
-				data.foodName = data.allFood[0].name
-				data.materialList = data.allFood[0].materialList
-			} else {
-				data.foodName = ""
-				data.materialList = []
-			}
-			// data.item.foodList.length != 0 ? data.foodName = data.item.foodList[0].name : ""
+		data.menuFun.getPlan(getDate(data.dayIndex, 10)).then(res => {
+			console.log(res.data);
+			data.item = res.data
 		})
 	}
 
 	// 跳转详情
 	function jumpDetail(e : any) : void {
 		uni.navigateTo({
-			url: `./foodDetail?id=${e._id}`
+			url: `./foodDetail?id=${e._id}&from=menu`
+		})
+	}
+
+	// 跳转添加饮食计划页面
+	function toCreatePlan(type : number) : void {
+		uni.navigateTo({
+			url: `/pages/menu/editFoodPlan?timeIndex=${type}&dayIndex=${data.dayIndex}`
+		})
+	}
+
+
+	// 删除饮食计划中某一项
+	function deletePlanFood(type : number, index : number) : void {
+		console.log(type, index);
+		let list : any[] = []
+		if (type === 0) {
+			list = data.item.breakfast
+		} else if (type === 1) {
+			list = data.item.dinner
+		} else if (type === 2) {
+			list = data.item.lunch
+		}
+
+		list.splice(index, 1)
+		data.menuFun.updatePlan(data.item._id, type, list).then(res => {
+			data.item = res.data
 		})
 	}
 
@@ -242,56 +294,15 @@
 		init()
 	}
 
+	// 选择日期
 	function choseDayType(e : number) : void {
-		data.day = e
-		data.item = data.dayList[e]
+		data.dayIndex = e
 		init2()
 	}
 
-	// 选择食物
-	function choseFood(e : any) : void {
-		data.foodName = e.name
-		data.materialList = e.materialList
-	}
 
 
-	function jumpEdit(e : string) : void {
-		uni.navigateTo({
-			url: `./editFoodPlan?time=${e}&date=${data.day}`
-		})
-	}
 
-	// 选择是否有食材
-	function selectMaterial(e : any) : void {
-		e.has ? e.has = false : e.has = true
-		let type : string;
-		data.lunchList.forEach(el => {
-			console.log(el);
-			if (el.name == data.foodName) {
-				type = "lunch"
-			}
-		})
-		data.dinnerList.forEach(el => {
-			console.log(el);
-			if (el.name == data.foodName) {
-				type = "dinner"
-			}
-		})
-
-		let list : any[] = [];
-
-		if (type == 'dinner') {
-			list = data.dinnerList
-		} else if (type == 'lunch') {
-			list = data.lunchList
-		}
-		data.menuFun.updataPlan({
-			time: data.day,
-			foodList: list,
-			type: type
-		}).then(() => {
-		})
-	}
 
 	onLoad(() => {
 		data.menuFun = uniCloud.importObject('menu')
@@ -392,13 +403,21 @@
 	}
 
 	.item {
-		width: 212rpx;
-		margin-bottom: 24rpx;
+		width: 100%;
+		border-radius: 16rpx;
+		height: 136rpx;
+		margin-bottom: 20rpx;
+		display: flex;
+		padding: 28rpx 40rpx 28rpx 28rpx;
+		align-items: center;
+		justify-content: space-between;
+		background-color: #FAFAFA;
 	}
 
 	.itemName {
 		display: flex;
 		align-items: center;
+		margin-left: 20rpx;
 	}
 
 	.itemName view {
@@ -427,11 +446,6 @@
 	.scrollList>>>.uni-scroll-view-refresher {
 		display: none;
 	}
-
-
-
-
-
 
 	.menu {
 		width: 100%;
@@ -478,57 +492,57 @@
 	}
 
 	.dayType {
-		margin-bottom: 20px;
-		width: 353px;
+		margin-bottom: 40rpx;
+		width: 706rpx;
 		background: #FAFAFA;
-		border-radius: 8px;
+		border-radius: 16rpx;
 		display: flex;
-		/* border: 1px solid #FAFAFA; */
+		/* border: 2rpx solid #FAFAFA; */
 		text-align: center;
 		font-weight: 700;
-		font-size: 14px;
+		font-size: 28rpx;
 	}
 
 	.planList {
 		width: 100%;
-		height: 108px;
-		border: 1px solid #242424;
-		border-radius: 8px;
-		padding: 16px 14px;
+		height: 216rpx;
+		border: 2rpx solid #242424;
+		border-radius: 16rpx;
+		padding: 32rpx 28rpx;
 	}
 
 	.selectDayType {
-		padding: 8px 12px;
-		gap: 10px;
+		padding: 16rpx 24rpx;
+		gap: 20rpx;
 		flex: 1;
-		height: 40px;
+		height: 80rpx;
 		background: #DDFF80;
 		color: #242424;
-		border: 1px solid #242424;
-		border-radius: 8px;
+		border: 2rpx solid #242424;
+		border-radius: 16rpx;
 	}
 
 	.unselectDayType {
-		padding: 8px 12px;
-		gap: 10px;
+		padding: 16rpx 24rpx;
+		gap: 20rpx;
 		flex: 1;
-		height: 40px;
+		height: 80rpx;
 		background: #FAFAFA;
-		border: 1px solid #FAFAFA;
-		border-radius: 8px;
+		border: 2rpx solid #FAFAFA;
+		border-radius: 16rpx;
 		color: rgba(36, 36, 36, 0.3);
 	}
 
 	.planBox {
 		align-items: flex-start;
-		padding: 16px 14px;
+		padding: 32rpx 28rpx;
 		width: 100%;
-		border: 1px solid #242424;
-		border-radius: 8px;
+		border: 2rpx solid #242424;
+		border-radius: 16rpx;
 		color: #242424;
-		font-size: 14px;
+		font-size: 28rpx;
 		font-weight: 600;
-		margin-bottom: 20px;
+		margin-bottom: 40rpx;
 	}
 
 	.plan {
@@ -541,51 +555,91 @@
 		display: flex;
 		align-items: center;
 		font-weight: 600;
-		font-size: 14px;
+		font-size: 28rpx;
 		color: #242424;
-		border-bottom: 1px solid #EBEBEB;
-		padding-bottom: 9px;
-		margin-bottom: 16px;
+		border-bottom: 2rpx solid #EBEBEB;
+		padding-bottom: 18rpx;
+		margin-bottom: 32rpx;
 	}
 
-	.foodList {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		font-weight: 500;
-		font-size: 12px;
-	}
+
 
 	.selectFood {
-		padding: 7px 11px;
-		height: 30px;
+		padding: 14rpx 22rpx;
+		height: 60rpx;
 		background: #DDFF80;
 		color: #242424;
-		border: 1px solid #242424;
-		border-radius: 4px;
+		border: 2rpx solid #242424;
+		border-radius: 8rpx;
 	}
 
 	.unselectFood {
-		padding: 7px 11px;
-		height: 30px;
+		padding: 14rpx 22rpx;
+		height: 60rpx;
 		background: #FAFAFA;
 		color: rgba(36, 36, 36, 0.3);
-		border: 1px solid #FAFAFA;
-		border-radius: 4px;
+		border: 2rpx solid #FAFAFA;
+		border-radius: 8rpx;
 	}
 
 	.material {
 		height: 80rpx;
 		width: 100%;
-		padding: 10px 10px 10px 12px;
+		padding: 20rpx 20rpx 20rpx 24rpx;
 		background: #FAFAFA;
-		border-radius: 8px;
+		border-radius: 16rpx;
 		display: flex;
-		margin-top: 10px;
+		margin-top: 20rpx;
 		align-items: center;
 	}
 
 	.boxSelect {
 		background-color: red;
+	}
+
+	.foodList {
+		width: 100%;
+		padding: 32rpx 28rpx;
+		border-radius: 24rpx;
+		background: #FAFAFA;
+		margin-bottom: 36rpx;
+	}
+
+	.planFood {
+		margin-top: 20rpx;
+		display: flex;
+		padding: 28rpx 40rpx 28rpx 28rpx;
+		justify-content: space-between;
+		align-items: center;
+		border-radius: 16rpx;
+		background: #FFF;
+	}
+
+	.createPlanButton {
+		display: flex;
+		padding: 24rpx 64rpx;
+		justify-content: space-between;
+		align-items: center;
+		border-radius: 146rpx;
+		border: 2rpx solid #C7FF02;
+		background: #FBFFED;
+		font-size: 22rpx;
+		position: fixed;
+		left: 78rpx;
+		right: 76rpx;
+		bottom: 184rpx;
+	}
+
+	.createPlanButtonItem {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.createPlanIcon {
+		width: 44rpx;
+		height: 42rpx;
+		margin-bottom: 8rpx;
 	}
 </style>

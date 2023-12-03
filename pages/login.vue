@@ -1,7 +1,7 @@
 <template>
 	<view class="box">
 		<view class="loginText" style="font-family: F;">
-			登录
+			你是哪个?
 		</view>
 		<view class="roleList">
 			<!-- 选猫 -->
@@ -127,9 +127,10 @@
 
 	.loginText {
 		margin-top: 78rpx;
-		font-weight: 500;
-		font-size: 64rpx;
+		font-weight: 300;
+		font-size: 52rpx;
 		margin-bottom: 48rpx;
+		text-align: center;
 	}
 
 	.roleList {

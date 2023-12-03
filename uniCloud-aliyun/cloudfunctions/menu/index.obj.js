@@ -3,7 +3,7 @@
 const db = uniCloud.database();
 const dbCmd = db.command
 const menu = db.collection('menu');
-const plan = db.collection('menu_plan');
+const plan_date = db.collection('menu_plan_date');
 const getDate = (day = 0, cut = 0) => {
 
 	let mydate = new Date()
@@ -91,31 +91,49 @@ module.exports = {
 	},
 
 	// 获取饮食计划
-	async getPlan() {
-		let day1 = getDate(0, 10)
-		let day2 = getDate(1, 10)
-		let day3 = getDate(2, 10)
-		console.log(day1, day2, day3)
-		let data = await plan.where({
-			date: dbCmd.or(dbCmd.eq(day1), dbCmd.eq(day2), dbCmd.eq(day3))
+	async getPlan(date) {
+		let data = await plan_date.where({
+			date: date
 		}).get()
 
-		data = data.data
+		data = data.data[0]
 		return {
 			data
 		}
 	},
 
+	// 更新饮食计划
+	async updatePlan(id, type, list) {
+		// type: 0 早餐
+		// type: 1 午餐
+		// type: 2 晚餐
+		if (type === 0) {
+			let data = await plan_date.doc(id).update({
+				breakfast: list,
+			})
+		} else if (type === 1) {
+			let data = await plan_date.doc(id).update({
+				dinner: list,
+			})
+		} else if (type === 2) {
+			let data = await plan_date.doc(id).update({
+				lunch: list,
+			})
+		}
+
+
+	},
+
 	async updataPlan(parms) {
 		console.log(parms)
 		if (parms.type == 'lunch') {
-			let data = await plan.where({
+			let data = await plan_date.where({
 				date: dbCmd.eq(getDate(parms.time, 10)),
 			}).update({
 				lunch: parms.foodList,
 			})
 		} else if (parms.type == 'dinner') {
-			let data = await plan.where({
+			let data = await plan_date.where({
 				date: dbCmd.eq(getDate(parms.time, 10)),
 			}).update({
 				dinner: parms.foodList,
@@ -126,7 +144,7 @@ module.exports = {
 	},
 	// 清除全部数据
 	clear() {
-		menu.where({
+		plan_date.where({
 			_id: dbCmd.exists(true)
 		}).remove()
 	},

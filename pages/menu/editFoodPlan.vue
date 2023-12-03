@@ -1,63 +1,95 @@
 <template>
 	<view class="box">
 		<view class="top">
-			<view style="width: 100%;padding-bottom: 16rpx;border-bottom: #EBEBEB 2rpx solid;margin-bottom: 32rpx;">
-				<image src="@/static/wucan.svg" mode="aspectFill" style="height: 56rpx;width: 116rpx;"
-					v-if="data.time==='lunch'"></image>
-				<image src="@/static/wancan.svg" mode="aspectFill" style="height: 56rpx;width: 116rpx;"
-					v-if="data.time==='dinner'"></image>
-			</view>
-
-			<view v-for="(item,index) in data.list" :key="index" class="food" style="margin-bottom: 20rpx;">
-				<view class="">
-					{{item.name}}
+			<view class="flex">
+				<image src="@/static/iconBack.svg" @click="back" style="width: 20rpx;height: 20rpx;margin-right: 16rpx;"
+					mode="aspectFill"></image>
+				<view class="fw7 fs16">
+					添加{{data.timeIndex===0?'早':data.timeIndex===1?'午':'晚'}}餐
 				</view>
-				<image src="@/static/menuPlanDelete.svg" mode="aspectFill" style="height: 48rpx;width: 48rpx;"
-					@click="deleteFromList(index)"></image>
-			</view>
-		</view>
-
-		<view style="width: 100%;display: flex;background: #FAFAFA;border-radius: 16rpx;margin: 40rpx 0;">
-			<view :class="[data.type1==='0'?'selectChoseType':'unselectChoseType']" @click="chose1('0')">
-				菜单
-			</view>
-			<view :class="[data.type1==='1'?'selectChoseType':'unselectChoseType']" @click="chose1('1')">
-				随机
-			</view>
-		</view>
-
-		<view class="inputBox">
-			<input type="text" @input="inputWrod" v-model="data.keyWrod" placeholder="输入菜名"
-				placeholder-class="placeholder">
-			<image src="@/static/search.svg" mode="aspectFill" id="searchIcon">
-			</image>
-		</view>
-
-		<view class="menu">
-			<view class="menuLeft">
-				<view v-for="(item,index) in data.menuTypeList" :key="index"
-					style="margin-bottom: 40rpx;text-align: center;"
-					:class="[data.menuType===item.id?'selectMenuType':'unselectMenuType']"
-					@click="choseMenuType(item.id)">
-					{{item.name}}
+				<view class="fs16" style="margin-left: 16rpx;">
+					{{data.dayIndex===0?'今':data.dayIndex===1?'明':'后'}}天
 				</view>
 			</view>
-			<scroll-view style="height: calc(100vh - 600rpx);width: 540rpx;" scroll-y="true" @scrolltolower="init">
-				<view v-for="(item,index) in data.data" :key="index" class="food">
-					<view class="">
+			<view class="inputBox fs12">
+				<input type="text" @input="inputWrod" v-model="data.keyWrod" placeholder="输入食材或菜名">
+				<image src="@/static/iconSearch.svg" mode="aspectFill" id="searchIcon">
+				</image>
+			</view>
+		</view>
+
+		<view class="menuType">
+			<view v-for="(item,index) in data.menuTypeList" :key="index"
+				:class="[data.menuType===item.id?'selectMenuType':'unselectMenuType']" @click="choseMenuType(item.id)">
+				{{item.name}}
+			</view>
+		</view>
+
+		<scroll-view scroll-y="true" class="scrollList" style="height: calc(100vh - 390rpx);" @scrolltolower="loadMore"
+			refresher-enabled>
+			<view class="item" v-for="(item,index) in data.data" :key="index" @click="addList(item)">
+				<view class="flex">
+					<image :src="item.url" mode="aspectFill" style="width: 80rpx;height: 80rpx;border-radius: 16rpx;"
+						lazy-load></image>
+					<view class="itemName">
 						{{item.name}}
 					</view>
-					<image src="@/static/menuPlanAdd.svg" mode="aspectFill" style="height: 48rpx;width: 48rpx;"
-						@click="addToList(item)"></image>
 				</view>
-			</scroll-view>
+				<image src="@/static/iconRight.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;"></image>
+			</view>
 
-		</view>
-		<view class="bottom">
-			<view class="button" @click="upload">
-				上传
+		</scroll-view>
+
+		<view class="bottom" @click="showPop">
+			<view class="flex">
+				<image v-if="data.timeIndex===0" src="@/static/breakfast.svg" mode="aspectFill"
+					style="width: 34rpx;height: 32rpx;margin-right: 12rpx;">
+				</image>
+				<image v-if="data.timeIndex===1" src="@/static/dinner.svg" mode="aspectFill"
+					style="width: 34rpx;height: 32rpx;margin-right: 12rpx;">
+				</image>
+				<image v-if="data.timeIndex===2" src="@/static/lunch.svg" mode="aspectFill"
+					style="width: 34rpx;height: 32rpx;margin-right: 12rpx;">
+				</image>
+				<view class="o" v-if="data.list.length!=0">
+
+				</view>
+				<view class="fs13">
+					{{data.list.length}}种食物
+				</view>
+			</view>
+
+			<view @click.stop="add" :class="[data.list.length===0?'hasFoodComplate':'noFoodComplate']">
+				完成
 			</view>
 		</view>
+
+		<uni-popup ref="popup">
+			<view class="popBox">
+				<view class="popTop">
+					<strong>
+						已选({{data.list.length}})
+					</strong>
+					<view @click="data.list=[]">
+						清空
+					</view>
+				</view>
+
+				<view class="carFood" v-for="(item,index) in data.list" :key="index">
+					<view class="flex">
+						<image :src="item.url" mode="aspectFill"
+							style="width: 80rpx;height: 80rpx;border-radius: 16rpx;">
+						</image>
+						<view class="itemName">
+							{{item.name}}
+						</view>
+					</view>
+					<image @click="deleteFood(index)" src="@/static/deletePlanFood.svg" mode="aspectFill"
+						style="height: 40rpx;width: 40rpx;">
+					</image>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -66,17 +98,14 @@
 		onShow,
 		onLoad
 	} from "@dcloudio/uni-app";
-	import { reactive } from "vue";
+	import { reactive, ref } from "vue";
+	import { getDate } from "../../utils";
 
 	const data = reactive({
-		time: "",
 		menuFun: null,
-		itemList: [],
-		type1: "0",
 		keyWrod: "",
 		page: 1,
 		pageSize: 21,
-		data: [],
 		menuType: "1",
 		menuTypeList: [
 			{ id: "1", name: "炒菜" },
@@ -86,20 +115,20 @@
 			{ id: "5", name: "甜品" },
 			{ id: "6", name: "饮品" },
 			{ id: "7", name: "汤" }],
+		dayIndex: 0,
+		timeIndex: 0,
+		data: null,
 		list: [],
-		date: ""
-
+		plan: null
 	})
 
-	// 菜单选择还是随机选择
-	function chose1(e : string) : void {
-		data.type1 = e
-	}
 
+	const popup = ref()
 
 	// 初始化
 	function init() : void {
 		data.menuFun.getList(data.keyWrod, data.menuType, data.page, data.pageSize).then(res => {
+			console.log(res);
 			if (res.data.length != 0) {
 				data.data = [...data.data, ...res.data]
 				data.page = data.page + 1
@@ -115,6 +144,11 @@
 		init()
 	}
 
+	// 返回
+	function back() : void {
+		uni.navigateBack()
+	}
+
 	// 选择菜单类型
 	function choseMenuType(e : string) : void {
 		data.menuType = e
@@ -123,97 +157,77 @@
 		init()
 	}
 
-	// 菜品添加到待上传列表中
-	function addToList(e : any) : void {
+	// 打开弹窗
+	function showPop() {
+		popup.value.open('bottom')
+	}
+
+
+	// 加入车
+	function addList(e : any) : void {
 		data.list.push(e)
 	}
 
-	// 从待上传的列表中删除
-	function deleteFromList(e : number) : void {
-		data.list.splice(e, 1)
+	// 删除
+	function deleteFood(index : number) {
+		data.list.splice(index, 1)
 	}
 
-	function upload() : void {
-		let foodList : any = [];
-		data.list.forEach(e => {
-			foodList.push({ name: e.name, materialList: e.materialList })
-		})
-		for (let i = 0; i < foodList.length; i++) {
-			for (let j = 0; j < foodList[i].materialList.length; j++) {
-				foodList[i].materialList[j].has = false
-			}
-		}
-		console.log(foodList);
+	function loadMore() : void {
+		init()
+	}
 
-		data.menuFun.updataPlan({
-			time: data.date,
-			foodList: foodList,
-			type: data.time
-		}).then(() => {
+	// 添加计划
+	function add() : void {
+		if (data.list.length === 0) {
+			return
+		}
+		console.log(data.plan);
+		let list : any[] = []
+		if (data.timeIndex === 0) {
+			list = data.plan.breakfast
+		} else if (data.timeIndex === 1) {
+			list = data.plan.dinner
+		} else if (data.timeIndex === 2) {
+			list = data.plan.lunch
+		}
+
+		list = [...list, ...data.list]
+		data.menuFun.updatePlan(data.plan._id, data.timeIndex, list).then(res => {
 			uni.navigateBack()
 		})
 	}
 
+
 	onLoad((options) => {
 		data.menuFun = uniCloud.importObject('menu')
-		data.time = options.time
-		data.date = options.date
+		console.log(options);
+		data.dayIndex = parseInt(options.dayIndex)
+		data.timeIndex = parseInt(options.timeIndex)
 		init()
+		data.menuFun.getPlan(getDate(data.dayIndex, 10)).then(res => {
+			data.plan = res.data
+		})
+
 	})
 </script>
 
 <style scoped>
 	.box {
-		padding: 64rpx 40rpx 0 40rpx;
+		padding: 40rpx;
 	}
 
 	.top {
-		border: 2rpx solid #242424;
-		border-radius: 16rpx;
-		width: 100%;
-		padding: 28rpx;
-	}
-
-	.selectChoseType {
-		flex: 1;
-		height: 80rpx;
-		font-weight: 600;
-		font-size: 28rpx;
-		line-height: 80rpx;
-		text-align: center;
-		color: #242424;
-		background: #DDFF80;
-		border: 2rpx solid #242424;
-		border-radius: 16rpx;
-
-	}
-
-	.unselectChoseType {
-		flex: 1;
-		height: 80rpx;
-		font-weight: 600;
-		font-size: 28rpx;
-		line-height: 80rpx;
-		text-align: center;
-		color: rgba(36, 36, 36, 0.3);
-		background: #FAFAFA;
-		border: 2rpx solid #FAFAFA;
-		border-radius: 16rpx;
-	}
-
-	.search {
-		width: 100%;
 		display: flex;
-		justify-content: space-between;
 		align-items: center;
-		padding: 20rpx 24rpx;
-		height: 72rpx;
-		background: #FAFAFA;
-		border-radius: 16rpx;
+		justify-content: space-between;
+		margin-bottom: 52rpx;
+		padding: 40rpx;
+		padding-left: 0rpx;
 	}
 
 	.inputBox {
-		width: 100%;
+		width: 318rpx;
 		height: 80rpx;
 		background: #FAFAFA;
 		border-radius: 16rpx;
@@ -232,85 +246,124 @@
 		position: absolute;
 		top: 18rpx;
 		left: 36rpx;
-		width: 70%;
+		width: 180rpx;
 		font-size: 28rpx;
 	}
 
-	.placeholder {
-		color: #242424;
-		font-size: 28rpx;
-		opacity: 0.2;
-	}
-
-	.menu {
+	.menuType {
 		display: flex;
-		justify-content: space-between;
-		width: 100%;
-		margin-top: 40rpx;
+		align-items: center;
+		/* width: 706rpx; */
+		height: 80rpx;
+		background: #F8F8F8;
+		border-radius: 16rpx;
+		margin-bottom: 40rpx;
 	}
-
-	.menuLeft {
-		width: 108rpx;
-	}
-
-
 
 	.selectMenuType {
-		padding: 16rpx 24rpx;
-		width: 108rpx;
-		height: 70rpx;
+		padding: 16rpx 20rpx;
 		background: #DDFF80;
 		border: 2rpx solid #242424;
 		border-radius: 16rpx;
+		flex: none;
+		/* flex-grow: 1; */
 		font-weight: 600;
 		font-size: 28rpx;
-		text-align: right;
 		color: #242424;
 	}
 
 	.unselectMenuType {
-		padding: 16rpx 24rpx;
-		width: 108rpx;
-		height: 70rpx;
-		background: #FAFAFA;
-		border: 2rpx solid #FAFAFA;
+		padding: 16rpx 20rpx;
+		background: #F8F8F8;
+		border: 2rpx solid #F8F8F8;
 		border-radius: 16rpx;
+		flex: none;
+		/* flex-grow: 1; */
 		font-weight: 600;
 		font-size: 28rpx;
-		text-align: right;
-		color: #B9B9B9;
+		color: rgba(36, 36, 36, 0.3);
 	}
 
-	.food {
-		display: flex;
-		justify-content: space-between;
-		height: 88rpx;
+	.item {
 		width: 100%;
-		margin-bottom: 2rpx;
-		background: #FAFAFA;
+		border-radius: 16rpx;
+		height: 136rpx;
+		margin-bottom: 20rpx;
+		display: flex;
+		padding: 28rpx 40rpx 28rpx 28rpx;
 		align-items: center;
-		padding: 20rpx 24rpx;
-		border-radius: 8px;
-		font-weight: 600;
+		justify-content: space-between;
+		background-color: #FAFAFA;
+	}
+
+	.itemName {
+		display: flex;
+		align-items: center;
+		margin-left: 20rpx;
 	}
 
 	.bottom {
 		position: fixed;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		padding: 34rpx;
+		padding: 24rpx 32rpx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border-radius: 128rpx;
+		border: 2rpx solid#C7FF02;
+		background: #FBFFED;
+		bottom: 64rpx;
+		left: 106rpx;
+		right: 106rpx;
+		height: 118rpx;
+		z-index: 999;
 	}
 
-	.button {
+	.hasFoodComplate {
+		padding: 16rpx 40rpx;
+		opacity: 0.4;
+		font-size: 28rpx;
+		font-weight: 700;
+	}
+
+	.noFoodComplate {
+		padding: 16rpx 40rpx;
+		border-radius: 128rpx;
+		background: #C7FF02;
+		font-size: 28rpx;
+	}
+
+	.popBox {
+		padding: 40rpx;
+		height: 694rpx;
 		width: 100%;
-		text-align: center;
-		height: 112rpx;
-		line-height: 112rpx;
-		font-weight: 600;
-		font-size: 32rpx;
-		background: #DDFF80;
-		border: 1px solid #242424;
-		border-radius: 12px;
+		padding: 40rpx;
+		border-radius: 40rpx 40rpx 0rpx 0rpx;
+		background: #FFF;
+	}
+
+	.popTop {
+		font-size: 28rpx;
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.o {
+		width: 12rpx;
+		height: 12rpx;
+		border-radius: 6rpx;
+		background-color: #C7FF02;
+		position: relative;
+		left: -10rpx;
+		top: -20rpx;
+	}
+
+	.carFood {
+		margin-top: 24rpx;
+		display: flex;
+		padding: 28rpx 40rpx 28rpx 28rpx;
+		justify-content: space-between;
+		align-items: center;
+		border-radius: 16rpx;
+		background: #FAFAFA;
 	}
 </style>

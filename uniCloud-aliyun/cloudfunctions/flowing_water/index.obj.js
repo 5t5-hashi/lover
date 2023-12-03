@@ -92,6 +92,16 @@ module.exports = {
 	 * @returns {object} 返回值描述
 	 */
 
+	async delAll() {
+		let res = await dog_flowing_water.where({
+			_id: dbCmd.exists(true)
+		}).remove()
+
+		let res2 = await cat_flowing_water.where({
+			_id: dbCmd.exists(true)
+		}).remove()
+	},
+
 	async out(label, money, name, creater) {
 		// 参数校验，如无参数则不需要
 		if (!label) {
@@ -109,7 +119,7 @@ module.exports = {
 		if (!name) {
 			return {
 				errCode: 'NAME_IS_NULL',
-				errMsg: '姓名不能为空'
+				errMsg: '名字不能为空'
 			}
 		}
 		if (!creater) {
